@@ -12,6 +12,7 @@
 #include "Road.h"
 
 class Building;
+class Road;
 
 class City {
 public:

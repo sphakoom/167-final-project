@@ -30,6 +30,7 @@
     <ClInclude Include="..\MatrixTransform.h" />
     <ClInclude Include="..\Node.h" />
     <ClInclude Include="..\OBJObject.h" />
+    <ClInclude Include="..\Road.h" />
     <ClInclude Include="..\shader.h" />
     <ClInclude Include="..\Skybox.h" />
     <ClInclude Include="..\Window.h" />
@@ -45,6 +46,7 @@
     <ClCompile Include="..\main.cpp" />
     <ClCompile Include="..\MatrixTransform.cpp" />
     <ClCompile Include="..\OBJObject.cpp" />
+    <ClCompile Include="..\Road.cpp" />
     <ClCompile Include="..\shader.cpp" />
     <ClCompile Include="..\Skybox.cpp" />
     <ClCompile Include="..\Window.cpp" />

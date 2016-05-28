@@ -13,7 +13,7 @@
 class Road {
 public:
 	Road(int width, int depth);
-	void draw(GLuint shaderProgram);
+	void draw(GLint shaderProgram);
 private:
 	GLuint VAO, VBO, EBO;
 	std::vector<glm::vec3> vertices;
