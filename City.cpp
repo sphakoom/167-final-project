@@ -20,8 +20,9 @@ void City::generateCity(int numBuildings, int roadFactor, int cityWidth, int cit
 	// Generate building vertices
 	for (int i = 0; i < numBuildings; ++i) {
 		// Random height
-		float height = ((float)rand() / RAND_MAX) * 5.0f + 1.5f;
-		this->buildings.push_back(new Building(height, (float)i));
+		//float height = ((float)rand() / RAND_MAX) * 5.0f + 1.5f;
+		//this->buildings.push_back(new Building(height, (float)i));
+		this->buildings.push_back(new Building(3, i));
 	}
 }
 

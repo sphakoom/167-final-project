@@ -20,6 +20,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Building.h" />
+    <ClInclude Include="..\BuildingComponent.h" />
     <ClInclude Include="..\City.h" />
     <ClInclude Include="..\Cube.h" />
     <ClInclude Include="..\Cylinder.h" />
@@ -37,6 +38,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Building.cpp" />
+    <ClCompile Include="..\BuildingComponent.cpp" />
     <ClCompile Include="..\City.cpp" />
     <ClCompile Include="..\Cube.cpp" />
     <ClCompile Include="..\Cylinder.cpp" />
@@ -52,6 +54,8 @@
     <ClCompile Include="..\Window.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="..\city.frag" />
+    <None Include="..\city.vert" />
     <None Include="..\shader.frag" />
     <None Include="..\shader.vert" />
     <None Include="..\skybox.frag" />
