@@ -1,24 +1,44 @@
-#include "Road.h"
+#include "BuildingComponent.h"
 
-Road::Road(int width, int depth)
+const GLuint indices[] = {  // Note that we start from 0!
+					  // Front face
+	0, 1, 2,
+	2, 3, 0,
+	// Top face
+	1, 5, 6,
+	6, 2, 1,
+	// Back face
+	7, 6, 5,
+	5, 4, 7,
+	// Bottom face
+	4, 0, 3,
+	3, 7, 4,
+	// Left face
+	4, 5, 1,
+	1, 0, 4,
+	// Right face
+	3, 2, 6,
+	6, 7, 3
+};
+
+
+BuildingComponent::BuildingComponent(float height, float width, float offsetx, float offsety)
 {
-	srand((unsigned int)time(NULL));
+	toWorld = glm::mat4(1.0f);
 
-	int maxWidth = width / 2;
-	int maxDepth = depth / 2;
+	float halfWidth = width / 2.0f;
 
-	glm::vec3 roadNode = glm::vec3();
+	// FRONT vertices
+	vertices.push_back(glm::vec3(-halfWidth + offsetx, offsety, halfWidth));	// bottom left
+	vertices.push_back(glm::vec3(halfWidth + offsetx, offsety, halfWidth));	// bottom right
+	vertices.push_back(glm::vec3(halfWidth + offsetx, offsety+height, halfWidth));	// top right
+	vertices.push_back(glm::vec3(-halfWidth + offsetx, offsety+height, halfWidth));	// top left
 
-	roadNode.x = ((float)rand() / RAND_MAX) * width - maxWidth;
-	roadNode.z = ((float)rand() / RAND_MAX) * depth - maxDepth;
-
-	vertices.push_back(roadNode);
-
-	glm::vec3 roadNode2 = glm::vec3();
-	roadNode2.x = ((float)rand() / RAND_MAX) * width - maxWidth;
-	roadNode2.z = ((float)rand() / RAND_MAX) * depth - maxDepth;
-
-	vertices.push_back(roadNode2);
+	// Back vertices
+	vertices.push_back(glm::vec3(-halfWidth + offsetx, offsety, -halfWidth));	// bottom left
+	vertices.push_back(glm::vec3(halfWidth + offsetx, offsety, -halfWidth));	// bottom right
+	vertices.push_back(glm::vec3(halfWidth + offsetx, height+offsety, -halfWidth));	// top right
+	vertices.push_back(glm::vec3(-halfWidth + offsetx, height+offsety, -halfWidth));	// top left
 
 	// Create buffers/arrays
 	glGenVertexArrays(1, &VAO);
@@ -31,6 +51,10 @@ Road::Road(int width, int depth)
 	glBindBuffer(GL_ARRAY_BUFFER, VBO);
 	glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(glm::vec3), &vertices[0], GL_STATIC_DRAW);
 
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices) , indices, GL_STATIC_DRAW);
+
+
 	glVertexAttribPointer(0,// This first parameter x should be the same as the number passed into the line "layout (location = x)" in the vertex shader. In this case, it's 0. Valid values are 0 to GL_MAX_UNIFORM_LOCATIONS.
 		3, // This second line tells us how any components there are per vertex. In this case, it's 3 (we have an x, y, and z component)
 		GL_FLOAT, // What type these components are
@@ -39,21 +63,21 @@ Road::Road(int width, int depth)
 		(GLvoid*)0); // Offset of the first vertex's component. In our case it's 0 since we don't pad the vertices array with anything.
 
 	glEnableVertexAttribArray(0);
+
 	glBindBuffer(GL_ARRAY_BUFFER, 0); // Note that this is allowed, the call to glVertexAttribPointer registered VBO as the currently bound vertex buffer object so afterwards we can safely unbind
+
 	glBindVertexArray(0);
 }
 
-void Road::draw(GLint shaderProgram)
+void BuildingComponent::draw(GLuint shaderProgram)
 {
 	glm::mat4 MVP = Window::P * Window::V * toWorld;
 	// We need to calculate this because as of GLSL version 1.40 (OpenGL 3.1, released March 2009), gl_ModelViewProjectionMatrix has been
 	// removed from the language. The user is expected to supply this matrix to the shader when using modern OpenGL.
 	GLuint MatrixID = glGetUniformLocation(shaderProgram, "MVP");
 	glUniformMatrix4fv(MatrixID, 1, GL_FALSE, &MVP[0][0]);
-	
-	glLineWidth(10.0f);
 
 	glBindVertexArray(VAO);
-	glDrawArrays(GL_LINES, 0, (GLsizei)vertices.size());
+	glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
 	glBindVertexArray(0);
 }
