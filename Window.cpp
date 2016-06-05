@@ -5,6 +5,7 @@ const char* window_title = "CSE 167 Final Project";
 Skybox * skybox;
 //Cube * cube;
 City * city;
+OBJObject* helicopter;
 
 GLint Window::shaderProgram, Window::skyboxShader, Window::cityShader;
 
@@ -191,6 +192,8 @@ void Window::display_callback(GLFWwindow* window)
 	glUseProgram(shaderProgram);
 	//bunny->draw(shaderProgram, 0);
 
+	helicopter->draw(shaderProgram, 0);
+
 	
 	V = glm::lookAt(cam_pos, cam_look_at, cam_up);
 
@@ -203,11 +206,23 @@ void Window::display_callback(GLFWwindow* window)
 void Window::key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
 	// Check for a key press
-	if (action == GLFW_PRESS)
+	if (action == GLFW_PRESS || action == GLFW_REPEAT)
 	{
 		switch (key) {
 		case GLFW_KEY_ESCAPE:
 			glfwSetWindowShouldClose(window, GL_TRUE);
+			break;
+		case GLFW_KEY_W:
+			cam_pos.z -= 1.0f;
+			break;
+		case GLFW_KEY_A:
+			cam_pos.x -= 1.0f;
+			break;
+		case GLFW_KEY_S:
+			cam_pos.z += 1.0f;
+			break;
+		case GLFW_KEY_D:
+			cam_pos.x += 1.0f;
 			break;
 		default:
 			printf("Invalid key press\n");
