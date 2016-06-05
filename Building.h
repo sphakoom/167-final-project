@@ -10,7 +10,7 @@ class BuildingComponent;
 
 class Building {
 public:
-	Building(int numComponents, int offset);
+	Building(int numComponents, int width, glm::vec3 origin, int type);
 	void draw(GLint shaderProgram);
 private:
 	std::vector<BuildingComponent *> components;

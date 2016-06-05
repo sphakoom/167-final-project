@@ -1,7 +1,7 @@
 #include "BuildingComponent.h"
 
-const GLuint indices[] = {  // Note that we start from 0!
-					  // Front face
+const GLuint rectangleIndices[] = {  // Note that we start from 0!
+	// Front face
 	0, 1, 2,
 	2, 3, 0,
 	// Top face
@@ -21,24 +21,57 @@ const GLuint indices[] = {  // Note that we start from 0!
 	6, 7, 3
 };
 
+const GLuint triangleIndices[] = {
+	// Front
+	0, 1, 4,
+	// Back
+	3, 2, 4,
+	// Left
+	3, 0, 4,
+	// Right
+	2, 4, 1,
+	// Bottom
+	0, 1, 2, 
+	2, 3, 0,
+};
 
-BuildingComponent::BuildingComponent(float height, float width, float offsetx, float offsety)
+
+BuildingComponent::BuildingComponent(float height, float width, glm::vec3 origin, int type)
 {
 	toWorld = glm::mat4(1.0f);
+	componentType = type;
 
 	float halfWidth = width / 2.0f;
 
-	// FRONT vertices
-	vertices.push_back(glm::vec3(-halfWidth + offsetx, offsety, halfWidth));	// bottom left
-	vertices.push_back(glm::vec3(halfWidth + offsetx, offsety, halfWidth));	// bottom right
-	vertices.push_back(glm::vec3(halfWidth + offsetx, offsety+height, halfWidth));	// top right
-	vertices.push_back(glm::vec3(-halfWidth + offsetx, offsety+height, halfWidth));	// top left
+	switch (type) {
+		case RECTANGLE:
+			// FRONT vertices
+			vertices.push_back(glm::vec3(-halfWidth + origin.x, origin.y, halfWidth));	// bottom left
+			vertices.push_back(glm::vec3(halfWidth + origin.x, origin.y, halfWidth));	// bottom right
+			vertices.push_back(glm::vec3(halfWidth + origin.x, origin.y + height, halfWidth));	// top right
+			vertices.push_back(glm::vec3(-halfWidth + origin.x, origin.y + height, halfWidth));	// top left
 
-	// Back vertices
-	vertices.push_back(glm::vec3(-halfWidth + offsetx, offsety, -halfWidth));	// bottom left
-	vertices.push_back(glm::vec3(halfWidth + offsetx, offsety, -halfWidth));	// bottom right
-	vertices.push_back(glm::vec3(halfWidth + offsetx, height+offsety, -halfWidth));	// top right
-	vertices.push_back(glm::vec3(-halfWidth + offsetx, height+offsety, -halfWidth));	// top left
+			// Back vertices
+			vertices.push_back(glm::vec3(-halfWidth + origin.x, origin.y, -halfWidth));	// bottom left
+			vertices.push_back(glm::vec3(halfWidth + origin.x, origin.y, -halfWidth));	// bottom right
+			vertices.push_back(glm::vec3(halfWidth + origin.x, height + origin.y, -halfWidth));	// top right
+			vertices.push_back(glm::vec3(-halfWidth + origin.x, height + origin.y, -halfWidth));	// top left
+			break;
+		case SEMI_CIRCLE:
+			break;
+		case PYRAMID:
+			// Base vertices
+			vertices.push_back(glm::vec3(-halfWidth + origin.x, origin.y, halfWidth)); // front left
+			vertices.push_back(glm::vec3(halfWidth + origin.x, origin.y, halfWidth));	// front right
+			vertices.push_back(glm::vec3(halfWidth + origin.x, origin.y, -halfWidth)); // back right
+			vertices.push_back(glm::vec3(-halfWidth + origin.x, origin.y, -halfWidth));	// back left
+			// Top vertex
+			vertices.push_back(glm::vec3(origin.x, origin.y + 1.0f, 0.0f));
+			break;
+		default:
+			break;
+	}
+	
 
 	// Create buffers/arrays
 	glGenVertexArrays(1, &VAO);
@@ -51,8 +84,23 @@ BuildingComponent::BuildingComponent(float height, float width, float offsetx, f
 	glBindBuffer(GL_ARRAY_BUFFER, VBO);
 	glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(glm::vec3), &vertices[0], GL_STATIC_DRAW);
 
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices) , indices, GL_STATIC_DRAW);
+
+	switch (type) {
+		case RECTANGLE:
+			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+			glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(rectangleIndices), rectangleIndices, GL_STATIC_DRAW);
+			break;
+		case SEMI_CIRCLE:
+			break;
+		case PYRAMID:
+			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+			glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(triangleIndices), triangleIndices, GL_STATIC_DRAW);
+			break;
+			break;
+		default:
+			break;
+	}
+	
 
 
 	glVertexAttribPointer(0,// This first parameter x should be the same as the number passed into the line "layout (location = x)" in the vertex shader. In this case, it's 0. Valid values are 0 to GL_MAX_UNIFORM_LOCATIONS.
@@ -78,6 +126,15 @@ void BuildingComponent::draw(GLuint shaderProgram)
 	glUniformMatrix4fv(MatrixID, 1, GL_FALSE, &MVP[0][0]);
 
 	glBindVertexArray(VAO);
-	glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
+
+	switch (componentType) {
+	case RECTANGLE:
+		glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
+	case PYRAMID:
+		glDrawElements(GL_TRIANGLES, 18, GL_UNSIGNED_INT, 0);
+	default:
+		break;
+	}
+
 	glBindVertexArray(0);
 }
