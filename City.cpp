@@ -21,11 +21,7 @@ void City::generateCity(int numBuildings, int roadFactor, int cityWidth, int cit
 	float savedX = 0.0f;
 	// Generate building vertices
 	for (int i = 0; i < numBuildings; ++i) {
-		// Random height
-		//float height = ((float)rand() / RAND_MAX) * 5.0f + 1.5f;
-		//this->buildings.push_back(new Building(height, (float)i));
-		this->buildings.push_back(new Building(3, 1, glm::vec3(i *1.25f, 0.0f, 0.0f), 3));
-
+		this->buildings.push_back(new Building(3, 2, glm::vec3(i*2 *1.25f, 0.0f, 0.0f), i % 3 + 1));
 		savedX += i;
 	}
 }

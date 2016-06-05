@@ -15,10 +15,10 @@ public:
 	enum Types
 	{
 		RECTANGLE = 1,
-		SEMI_CIRCLE = 2,
+		ARCH = 2,
 		PYRAMID = 3
 	};
-	BuildingComponent(float height, float width, glm::vec3 origin, int type);
+	BuildingComponent(glm::vec3 dim, glm::vec3 origin, int type);
 	void draw(GLuint shaderProgram);
 private:
 	std::vector<glm::vec3> vertices;

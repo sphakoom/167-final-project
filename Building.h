@@ -10,6 +10,13 @@ class BuildingComponent;
 
 class Building {
 public:
+	enum Types
+	{
+		SKYSCRAPER = 1,
+		ARCH = 2,
+		TOWER = 3
+	};
+
 	Building(int numComponents, int width, glm::vec3 origin, int type);
 	void draw(GLint shaderProgram);
 private:

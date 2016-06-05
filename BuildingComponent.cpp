@@ -36,37 +36,50 @@ const GLuint triangleIndices[] = {
 };
 
 
-BuildingComponent::BuildingComponent(float height, float width, glm::vec3 origin, int type)
+//BuildingComponent::BuildingComponent(float height, float width, glm::vec3 origin, int type)
+BuildingComponent::BuildingComponent(glm::vec3 dim, glm::vec3 origin, int type)
 {
 	toWorld = glm::mat4(1.0f);
 	componentType = type;
 
-	float halfWidth = width / 2.0f;
+	float halfWidth = dim.x / 2.0f;
+	float halfDepth = dim.z / 2.0f;
 
 	switch (type) {
 		case RECTANGLE:
 			// FRONT vertices
-			vertices.push_back(glm::vec3(-halfWidth + origin.x, origin.y, halfWidth));	// bottom left
-			vertices.push_back(glm::vec3(halfWidth + origin.x, origin.y, halfWidth));	// bottom right
-			vertices.push_back(glm::vec3(halfWidth + origin.x, origin.y + height, halfWidth));	// top right
-			vertices.push_back(glm::vec3(-halfWidth + origin.x, origin.y + height, halfWidth));	// top left
+			vertices.push_back(glm::vec3(-halfWidth + origin.x, origin.y, halfDepth));	// bottom left
+			vertices.push_back(glm::vec3(halfWidth + origin.x, origin.y, halfDepth));	// bottom right
+			vertices.push_back(glm::vec3(halfWidth + origin.x, origin.y + dim.y, halfDepth));	// top right
+			vertices.push_back(glm::vec3(-halfWidth + origin.x, origin.y + dim.y, halfDepth));	// top left
 
 			// Back vertices
-			vertices.push_back(glm::vec3(-halfWidth + origin.x, origin.y, -halfWidth));	// bottom left
-			vertices.push_back(glm::vec3(halfWidth + origin.x, origin.y, -halfWidth));	// bottom right
-			vertices.push_back(glm::vec3(halfWidth + origin.x, height + origin.y, -halfWidth));	// top right
-			vertices.push_back(glm::vec3(-halfWidth + origin.x, height + origin.y, -halfWidth));	// top left
+			vertices.push_back(glm::vec3(-halfWidth + origin.x, origin.y, -halfDepth));	// bottom left
+			vertices.push_back(glm::vec3(halfWidth + origin.x, origin.y, -halfDepth));	// bottom right
+			vertices.push_back(glm::vec3(halfWidth + origin.x, dim.y + origin.y, -halfDepth));	// top right
+			vertices.push_back(glm::vec3(-halfWidth + origin.x, dim.y + origin.y, -halfDepth));	// top left
 			break;
-		case SEMI_CIRCLE:
+		case ARCH:
+			// FRONT vertices
+			vertices.push_back(glm::vec3(-halfWidth + origin.x, origin.y, halfDepth));	// bottom left
+			vertices.push_back(glm::vec3(halfWidth + origin.x, origin.y, halfDepth));	// bottom right
+			vertices.push_back(glm::vec3(halfWidth + origin.x - 0.25f, origin.y + dim.y, halfDepth));	// top right
+			vertices.push_back(glm::vec3(-halfWidth + origin.x + 0.25f, origin.y + dim.y, halfDepth));	// top left
+
+			// Back vertices
+			vertices.push_back(glm::vec3(-halfWidth + origin.x, origin.y, -halfDepth));	// bottom left
+			vertices.push_back(glm::vec3(halfWidth + origin.x, origin.y, -halfDepth));	// bottom right
+			vertices.push_back(glm::vec3(halfWidth + origin.x - 0.25f, dim.y + origin.y, -halfDepth));	// top right
+			vertices.push_back(glm::vec3(-halfWidth + origin.x + 0.25f, dim.y + origin.y, -halfDepth));	// top left			
 			break;
 		case PYRAMID:
 			// Base vertices
-			vertices.push_back(glm::vec3(-halfWidth + origin.x, origin.y, halfWidth)); // front left
-			vertices.push_back(glm::vec3(halfWidth + origin.x, origin.y, halfWidth));	// front right
-			vertices.push_back(glm::vec3(halfWidth + origin.x, origin.y, -halfWidth)); // back right
-			vertices.push_back(glm::vec3(-halfWidth + origin.x, origin.y, -halfWidth));	// back left
+			vertices.push_back(glm::vec3(-halfWidth + origin.x, origin.y, halfDepth)); // front left
+			vertices.push_back(glm::vec3(halfWidth + origin.x, origin.y, halfDepth));	// front right
+			vertices.push_back(glm::vec3(halfWidth + origin.x, origin.y, -halfDepth)); // back right
+			vertices.push_back(glm::vec3(-halfWidth + origin.x, origin.y, -halfDepth));	// back left
 			// Top vertex
-			vertices.push_back(glm::vec3(origin.x, origin.y + 1.0f, 0.0f));
+			vertices.push_back(glm::vec3(origin.x, origin.y + ((float)rand() *2.5f / RAND_MAX), 0.0f));
 			break;
 		default:
 			break;
@@ -87,15 +100,13 @@ BuildingComponent::BuildingComponent(float height, float width, glm::vec3 origin
 
 	switch (type) {
 		case RECTANGLE:
+		case ARCH:
 			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
 			glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(rectangleIndices), rectangleIndices, GL_STATIC_DRAW);
-			break;
-		case SEMI_CIRCLE:
 			break;
 		case PYRAMID:
 			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
 			glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(triangleIndices), triangleIndices, GL_STATIC_DRAW);
-			break;
 			break;
 		default:
 			break;
@@ -129,6 +140,7 @@ void BuildingComponent::draw(GLuint shaderProgram)
 
 	switch (componentType) {
 	case RECTANGLE:
+	case ARCH:
 		glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
 	case PYRAMID:
 		glDrawElements(GL_TRIANGLES, 18, GL_UNSIGNED_INT, 0);
