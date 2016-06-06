@@ -11,8 +11,6 @@
 #include "Skybox.h"
 #include "shader.h"
 #include "City.h"
-#include "Mesh.h"
-#include "Import.h"
 
 class Window
 {

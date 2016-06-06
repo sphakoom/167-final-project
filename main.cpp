@@ -63,10 +63,10 @@ void print_versions()
 #endif
 }
 
-int main(int argc, char **argv)
+int main()
 {
 
-	glutInit(&argc, argv);
+	//glutInit(&argc, argv);
 	// Create the GLFW window
 	window = Window::create_window(640, 480);
 	// Print OpenGL and GLSL versions
