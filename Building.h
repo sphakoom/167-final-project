@@ -10,8 +10,14 @@ class BuildingComponent;
 
 class Building {
 public:
-	Building(int numComponents, int offset);
-	void draw(GLint shaderProgram);
+	enum buildingTypes {
+		SKYSCRAPER = 1,
+		ARCH = 2,
+		TOWER = 3
+	};
+
+	Building(int numComponents, int width, glm::vec3 origin, int type);
+	void draw(GLint shaderProgram, GLuint texture);
 private:
 	std::vector<BuildingComponent *> components;
 };

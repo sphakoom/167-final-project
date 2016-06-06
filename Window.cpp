@@ -7,11 +7,13 @@ Skybox * skybox;
 City * city;
 Plant *p;
 GLint Window::shaderProgram, Window::skyboxShader, Window::cityShader;
+OBJObject* helicopter;
+GLint Window::shaderProgram, Window::skyboxShader, Window::cityShader, Window::helicopterShader;
 
 // Default camera parameters
-glm::vec3 cam_pos(0.0f, 0.0f, 20.0f);		// e  | Position of camera
-glm::vec3 cam_look_at(0.0f, 0.0f, 0.0f);	// d  | This is where the camera looks at
-glm::vec3 cam_up(0.0f, 1.0f, 0.0f);			// up | What orientation "up" is
+glm::vec3 Window::cam_pos(0.0f, 0.0f, 20.0f);		// e  | Position of camera
+glm::vec3 Window::cam_look_at(0.0f, 0.0f, 0.0f);	// d  | This is where the camera looks at
+glm::vec3 Window::cam_up(0.0f, 1.0f, 0.0f);			// up | What orientation "up" is
 
 int Window::width;
 int Window::height;
@@ -40,6 +42,7 @@ void Window::initialize_objects()
 	shaderProgram = LoadShaders("../shader.vert", "../shader.frag");
 	skyboxShader = LoadShaders("../skybox.vert", "../skybox.frag");
 	cityShader = LoadShaders("../city.vert", "../city.frag");
+	helicopterShader = LoadShaders("../reflection.vert", "../reflection.frag");
 #else // Not windows
 	shaderProgram = LoadShaders("shader.vert", "shader.frag");
 	skyboxShader = LoadShaders("skybox.vert", "skybox.frag");
@@ -50,6 +53,7 @@ void Window::initialize_objects()
 	//cube = new Cube();
 	city = new City();
 	p = new Plant();
+	helicopter = new OBJObject("ka-50.obj", "jade");
 }
 
 void Window::clean_up()
@@ -121,19 +125,19 @@ void Window::idle_callback(GLFWwindow* window)
 
 	if (MOUSE_PRESS) {
 		// Get the direction
-		glm::vec3 direction; 
+		glm::vec3 direction;
 
 		if (selected != NULL) {
 			// Difference in pixels
 			direction = currPos - lastPos;
 
 			float velocity = sqrt((direction.x * direction.x) + (direction.y * direction.y) + (direction.z * direction.z));
-			
+
 			if (velocity > 0.001f) {
 				glm::vec3 z_axis = glm::normalize(cam_pos - cam_look_at);
 				glm::vec3 x_axis = glm::normalize(glm::cross(cam_up, z_axis));
 				glm::vec3 y_axis = glm::cross(z_axis, x_axis);
-				
+
 				glm::vec3 xAmt = direction.x * 0.0001f * x_axis;
 				glm::vec3 yAmt = direction.y * 0.0001f * y_axis;
 
@@ -184,7 +188,6 @@ void Window::display_callback(GLFWwindow* window)
 
 	// Render the skybox
 	skybox->draw(skyboxShader, shaderProgram);
-	//cube->draw(shaderProgram);
 
 	//city->draw(cityShader);
 
@@ -192,8 +195,11 @@ void Window::display_callback(GLFWwindow* window)
 	glUseProgram(shaderProgram);
 	//bunny->draw(shaderProgram, 0);
 	p->draw(shaderProgram);
-	
+
 	V = glm::lookAt(cam_pos, cam_look_at, cam_up);
+
+	glUseProgram(helicopterShader);
+	helicopter->draw();
 
 	// Gets events, including input such as keyboard and mouse or window resizing
 	glfwPollEvents();
@@ -204,11 +210,27 @@ void Window::display_callback(GLFWwindow* window)
 void Window::key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
 	// Check for a key press
-	if (action == GLFW_PRESS)
+	if (action == GLFW_PRESS || action == GLFW_REPEAT)
 	{
 		switch (key) {
 		case GLFW_KEY_ESCAPE:
 			glfwSetWindowShouldClose(window, GL_TRUE);
+			break;
+		case GLFW_KEY_W:
+			cam_pos.z -= 1.0f;
+			cam_look_at.z -= 1.0f;
+			break;
+		case GLFW_KEY_A:
+			cam_pos.x -= 1.0f;
+			cam_look_at.x -= 1.0f;
+			break;
+		case GLFW_KEY_S:
+			cam_pos.z += 1.0f;
+			cam_look_at.z += 1.0f;
+			break;
+		case GLFW_KEY_D:
+			cam_pos.x += 1.0f;
+			cam_look_at.x += 1.0f;
 			break;
 		default:
 			printf("Invalid key press\n");
@@ -231,7 +253,7 @@ void Window::mouse_button_callback(GLFWwindow* window, int button, int action, i
 
 		// Selecting a point
 		if (doRayCast()) {
-			
+
 		}
 
 		// Moving the camera around
@@ -264,7 +286,7 @@ void Window::scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
 {
 	 // grab the direction
 	 glm::vec3 direction = glm::normalize(cam_pos - cam_look_at);
-	
+
 	// Negate for 'down' scroll
 	if (yoffset < 0.0) {
 		direction = -direction;
@@ -308,7 +330,7 @@ bool Window::doRayCast()
 	for (int i = 0; i < selectables.size(); ++i) {
 		float b = glm::dot(ray_wor, (cam_pos - *selectables[i].first));
 
-		// (O - C) * (O - C) - r^2 
+		// (O - C) * (O - C) - r^2
 		float c = glm::dot(cam_pos - *selectables[i].first, cam_pos - *selectables[i].first) - 0.02f;
 
 		float bSquaredMinusC = b*b - c;

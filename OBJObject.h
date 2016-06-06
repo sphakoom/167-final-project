@@ -28,6 +28,7 @@ public:
 	float cutOff;
 
 	void parse(const char* filepath);
+	void draw();
 	void draw(GLuint shaderProgram,  int);
 	void draw(GLuint shaderProgram, int, glm::mat4);
 	void OBJObject::draw(GLuint shaderProgram, glm::vec3 camera_position);

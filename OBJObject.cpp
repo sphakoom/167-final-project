@@ -57,8 +57,7 @@ OBJObject::OBJObject(const char *filepath, std::string material)
 	// Bind indices
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(unsigned int) * indices.size(), &(indices[0]), GL_STATIC_DRAW);
-
-	glBindVertexArray(0); // Unbind VAO (it's always a good thing to unbind any buffer/array to prevent strange bugs), remember: do NOT unbind the EBO, keep it bound to this VAO
+	glBindVertexArray(0);
 
 	printf("Done.\n");
 }
@@ -137,10 +136,10 @@ void OBJObject::parse(const char *filepath)
 			int start2 = stoi(v2.substr(0, v2.find_first_of('/')));
 			int start3 = stoi(v3.substr(0, v3.find_first_of('/')));
 
-			// Add the indices
-			indices.push_back(start1-1);
-			indices.push_back(start2-1);
-			indices.push_back(start3-1);
+			indices.push_back(start1);
+			indices.push_back(start2);
+			indices.push_back(start3);
+			
 		}
 		// Process vertices
 		else {
@@ -211,10 +210,31 @@ void OBJObject::parse(const char *filepath)
 	}
 
 	inFile.close();
+
+	for (unsigned int i = 0; i < vertices.size(); ++i) {
+		vertices[i] *= 10.0f;
+	}
 }
 
 void OBJObject::loadData()
 {
+}
+
+void OBJObject::draw() {
+
+	GLint helicopterShader = Window::helicopterShader;
+
+	GLuint normalID = glGetUniformLocation(helicopterShader, "model");
+	glUniformMatrix4fv(normalID, 1, GL_FALSE, &toWorld[0][0]);
+
+	glUniformMatrix4fv(glGetUniformLocation(helicopterShader, "projection"), 1, GL_FALSE, &Window::P[0][0]);
+	glUniformMatrix4fv(glGetUniformLocation(helicopterShader, "view"), 1, GL_FALSE, &Window::V[0][0]);
+	glUniform3f(glGetUniformLocation(helicopterShader, "cameraPos"), Window::cam_pos.x, Window::cam_pos.y, Window::cam_pos.z);
+	glUniform1i(glGetUniformLocation(helicopterShader, "skybox"), 0);
+
+	glBindVertexArray(VAO);
+	glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
+	glBindVertexArray(0);
 }
 
 void OBJObject::draw(GLuint shaderProgram, int lightOption)
@@ -363,7 +383,7 @@ void OBJObject::draw(GLuint shaderProgram, int lightOption, glm::mat4 model)
 	}
 
 	glBindVertexArray(VAO);
-	glDrawElements(GL_TRIANGLES, (GLsizei)indices.size(), GL_UNSIGNED_INT, 0);
+	glDrawElements(GL_TRIANGLES, (GLsizei) indices.size(), GL_UNSIGNED_INT, 0);
 	glBindVertexArray(0);
 }
 
@@ -379,7 +399,7 @@ void OBJObject::draw(GLuint shaderProgram, glm::vec3 camera_position)
 	glUniform1i(glGetUniformLocation(shaderProgram, "skybox"), 0);
 
 	glBindVertexArray(VAO);
-	glDrawElements(GL_TRIANGLES, (GLsizei)indices.size(), GL_UNSIGNED_INT, 0);
+	glDrawElements(GL_TRIANGLES, (GLsizei) indices.size(), GL_UNSIGNED_INT, 0);
 	glBindVertexArray(0);
 }
 

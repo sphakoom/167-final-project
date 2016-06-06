@@ -5,11 +5,13 @@ in vec3 Normal;
 in vec3 TexCoords;
 
 out vec4 color;
-uniform samplerCube skybox;
+uniform sampler2D buildingTex;
 uniform int buildingPart;
 
 void main()
 {
+	color = texture2D(buildingTex, vec2(TexCoords.x, TexCoords.y));
+/*
 	if( buildingPart == 1 ) {
 		color = vec4(0.5, 0.5, 0.5, 1.0);
 	}
@@ -18,4 +20,5 @@ void main()
 	}
 	else
 		color = vec4(0.5, 0.5, 1.0, 1.0);
+		*/
 }
