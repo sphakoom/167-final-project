@@ -19,10 +19,9 @@ public:
 	};
 	int componentType;
 	BuildingComponent(glm::vec3 dim, glm::vec3 origin, int type);
-	void draw(GLuint shaderProgram);
+	void draw(GLuint shaderProgram, GLuint textureID);
 	void bindTexture(GLuint texture);
 private:
-	GLuint textureID;
 	std::vector<glm::vec3> vertices;
 	GLuint VAO, VBO, EBO;
 	glm::mat4 toWorld;

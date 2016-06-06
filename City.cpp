@@ -1,8 +1,12 @@
 #include "City.h"
 
+int BRICK_TEXTURE = 0;
+int WINDOW_TEXTURE = 1;
+
 City::City()
 {
 	generateCity(8, 0, 10, 10);
+	textures.push_back(new Texture("brick2.ppm"));
 }
 
 City::~City()
@@ -31,7 +35,7 @@ void City::draw(GLuint shaderProgram)
 {
 	glUseProgram(shaderProgram);
 	for (int i = 0; i < buildings.size(); ++i) {
-		buildings[i]->draw(shaderProgram);
+		buildings[i]->draw(shaderProgram, textures[0]->textureID);
 	}
 	for (int i = 0; i < roads.size(); ++i) {
 		roads[i]->draw(shaderProgram);

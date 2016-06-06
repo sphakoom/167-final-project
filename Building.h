@@ -17,12 +17,9 @@ public:
 	};
 
 	Building(int numComponents, int width, glm::vec3 origin, int type);
-	void draw(GLint shaderProgram);
-	GLuint loadTexture();
-	unsigned char* loadPPM(const char* filename, int& width, int& height);
+	void draw(GLint shaderProgram, GLuint texture);
 private:
 	std::vector<BuildingComponent *> components;
-	GLuint buildingTexture;
 };
 
 #endif

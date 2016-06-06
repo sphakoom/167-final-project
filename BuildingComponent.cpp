@@ -22,6 +22,7 @@ const GLuint rectangleIndices[] = {  // Note that we start from 0!
 };
 
 const GLuint triangleIndices[] = {
+	/*
 	// Front
 	0, 1, 4,
 	// Back
@@ -33,6 +34,13 @@ const GLuint triangleIndices[] = {
 	// Bottom
 	0, 1, 2, 
 	2, 3, 0,
+	*/
+	0, 1, 4, // Front Face
+	1, 2, 4, // Right Face 
+	2, 3, 4, // Back Face
+	3, 0, 4, // Left Face
+	0, 2, 1, // Bottom Face front
+	0, 3, 2 // Bottom Face back
 };
 
 
@@ -127,10 +135,10 @@ BuildingComponent::BuildingComponent(glm::vec3 dim, glm::vec3 origin, int type)
 
 void BuildingComponent::bindTexture(GLuint texture)
 {
-	this->textureID = texture;
+	//this->textureID = texture;
 }
 
-void BuildingComponent::draw(GLuint shaderProgram)
+void BuildingComponent::draw(GLuint shaderProgram, GLuint textureID)
 {
 	glm::mat4 MVP = Window::P * Window::V * toWorld;
 	// We need to calculate this because as of GLSL version 1.40 (OpenGL 3.1, released March 2009), gl_ModelViewProjectionMatrix has been
@@ -142,12 +150,17 @@ void BuildingComponent::draw(GLuint shaderProgram)
 	// Set view and projection
 	glUniform1i(glGetUniformLocation(shaderProgram, "buildingTex"), 1);
 
+	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	
 	// skybox cube
 	glActiveTexture(GL_TEXTURE1);
 	glBindTexture(GL_TEXTURE_2D, textureID);
 
 	// Make sure no bytes are padded:
 	glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+
+
 	/*
 	// Select GL_MODULATE to mix texture with polygon color for shading:
 	glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
