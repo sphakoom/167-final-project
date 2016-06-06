@@ -84,7 +84,6 @@ BuildingComponent::BuildingComponent(glm::vec3 dim, glm::vec3 origin, int type)
 		default:
 			break;
 	}
-	
 
 	// Create buffers/arrays
 	glGenVertexArrays(1, &VAO);
@@ -112,8 +111,6 @@ BuildingComponent::BuildingComponent(glm::vec3 dim, glm::vec3 origin, int type)
 			break;
 	}
 	
-
-
 	glVertexAttribPointer(0,// This first parameter x should be the same as the number passed into the line "layout (location = x)" in the vertex shader. In this case, it's 0. Valid values are 0 to GL_MAX_UNIFORM_LOCATIONS.
 		3, // This second line tells us how any components there are per vertex. In this case, it's 3 (we have an x, y, and z component)
 		GL_FLOAT, // What type these components are
@@ -128,6 +125,11 @@ BuildingComponent::BuildingComponent(glm::vec3 dim, glm::vec3 origin, int type)
 	glBindVertexArray(0);
 }
 
+void BuildingComponent::bindTexture(GLuint texture)
+{
+	this->textureID = texture;
+}
+
 void BuildingComponent::draw(GLuint shaderProgram)
 {
 	glm::mat4 MVP = Window::P * Window::V * toWorld;
@@ -135,7 +137,29 @@ void BuildingComponent::draw(GLuint shaderProgram)
 	// removed from the language. The user is expected to supply this matrix to the shader when using modern OpenGL.
 	GLuint MatrixID = glGetUniformLocation(shaderProgram, "MVP");
 	glUniformMatrix4fv(MatrixID, 1, GL_FALSE, &MVP[0][0]);
+	glUniformMatrix4fv(glGetUniformLocation(shaderProgram, "model"), 1, GL_FALSE, &toWorld[0][0]);
 
+	// Set view and projection
+	glUniform1i(glGetUniformLocation(shaderProgram, "buildingTex"), 1);
+
+	// skybox cube
+	glActiveTexture(GL_TEXTURE1);
+	glBindTexture(GL_TEXTURE_2D, textureID);
+
+	// Make sure no bytes are padded:
+	glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+	/*
+	// Select GL_MODULATE to mix texture with polygon color for shading:
+	glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+
+	// Use bilinear interpolation:
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+	// Use clamp to edge to hide skybox edges:
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+	*/
 	glBindVertexArray(VAO);
 
 	switch (componentType) {
@@ -149,4 +173,5 @@ void BuildingComponent::draw(GLuint shaderProgram)
 	}
 
 	glBindVertexArray(0);
+	glDepthMask(GL_TRUE);
 }

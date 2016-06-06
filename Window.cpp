@@ -11,7 +11,7 @@ GLint Window::shaderProgram, Window::skyboxShader, Window::cityShader;
 
 // Default camera parameters
 glm::vec3 cam_pos(0.0f, 0.0f, 20.0f);		// e  | Position of camera
-glm::vec3 cam_look_at(0.0f, 0.0f, 0.0f);	// d  | This is where the camera looks at
+glm::vec3 cam_look_at(0.0f, 0.0f, 10.0f);	// d  | This is where the camera looks at
 glm::vec3 cam_up(0.0f, 1.0f, 0.0f);			// up | What orientation "up" is
 
 int Window::width;
@@ -192,7 +192,7 @@ void Window::display_callback(GLFWwindow* window)
 	glUseProgram(shaderProgram);
 	//bunny->draw(shaderProgram, 0);
 
-	helicopter->draw(shaderProgram, 0);
+	//helicopter->draw(shaderProgram, 0);
 
 	
 	V = glm::lookAt(cam_pos, cam_look_at, cam_up);
@@ -214,15 +214,19 @@ void Window::key_callback(GLFWwindow* window, int key, int scancode, int action,
 			break;
 		case GLFW_KEY_W:
 			cam_pos.z -= 1.0f;
+			cam_look_at.z -= 1.0f;
 			break;
 		case GLFW_KEY_A:
 			cam_pos.x -= 1.0f;
+			cam_look_at.x -= 1.0f;
 			break;
 		case GLFW_KEY_S:
 			cam_pos.z += 1.0f;
+			cam_look_at.z += 1.0f;
 			break;
 		case GLFW_KEY_D:
 			cam_pos.x += 1.0f;
+			cam_look_at.x += 1.0f;
 			break;
 		default:
 			printf("Invalid key press\n");

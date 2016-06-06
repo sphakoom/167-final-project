@@ -10,8 +10,7 @@ class BuildingComponent;
 
 class Building {
 public:
-	enum Types
-	{
+	enum buildingTypes {
 		SKYSCRAPER = 1,
 		ARCH = 2,
 		TOWER = 3
@@ -19,8 +18,11 @@ public:
 
 	Building(int numComponents, int width, glm::vec3 origin, int type);
 	void draw(GLint shaderProgram);
+	GLuint loadTexture();
+	unsigned char* loadPPM(const char* filename, int& width, int& height);
 private:
 	std::vector<BuildingComponent *> components;
+	GLuint buildingTexture;
 };
 
 #endif

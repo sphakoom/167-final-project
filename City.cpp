@@ -2,7 +2,7 @@
 
 City::City()
 {
-	generateCity(5, 0, 10, 10);
+	generateCity(8, 0, 10, 10);
 }
 
 City::~City()
@@ -18,10 +18,11 @@ void City::generateCity(int numBuildings, int roadFactor, int cityWidth, int cit
 		roads.push_back(new Road(cityWidth, cityDepth));
 	}
 	*/
+	srand(time(NULL));
 	float savedX = 0.0f;
 	// Generate building vertices
 	for (int i = 0; i < numBuildings; ++i) {
-		this->buildings.push_back(new Building(3, 2, glm::vec3(i*2 *1.25f, 0.0f, 0.0f), i % 3 + 1));
+		this->buildings.push_back(new Building(3, 2, glm::vec3(i*2 *1.25f, 0.0f, 0.0f), rand() % 3 + 1));
 		savedX += i;
 	}
 }

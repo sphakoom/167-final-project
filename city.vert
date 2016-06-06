@@ -12,4 +12,5 @@ void main()
 {
     gl_Position = MVP * vec4(position.x, position.y, position.z, 1.0);
 	FragPos = vec3(model * vec4(position, 1.0));
+	TexCoords = position;
 }

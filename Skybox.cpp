@@ -104,8 +104,7 @@ unsigned char* Skybox::loadPPM(const char* filename, int& width, int& height)
 	char* retval_fgets;
 	size_t retval_sscanf;
 
-	if ((fp = fopen(filename, "rb")) == NULL)
-	{
+	if ((fp = fopen(filename, "rb")) == NULL) {
 		std::cerr << "error reading ppm file, could not locate " << filename << std::endl;
 		width = 0;
 		height = 0;
@@ -125,8 +124,7 @@ unsigned char* Skybox::loadPPM(const char* filename, int& width, int& height)
 	height = atoi(buf[2]);
 
 	// Read maxval:
-	do
-	{
+	do {
 		retval_fgets = fgets(buf[0], BUFSIZE, fp);
 	} while (buf[0][0] == '#');
 
@@ -135,8 +133,7 @@ unsigned char* Skybox::loadPPM(const char* filename, int& width, int& height)
 	read = fread(rawData, width * height * 3, 1, fp);
 	fclose(fp);
 
-	if (read != 1)
-	{
+	if (read != 1) {
 		std::cerr << "error parsing ppm file, incomplete data" << std::endl;
 		delete[] rawData;
 		width = 0;
@@ -222,7 +219,6 @@ void Skybox::draw(GLuint shaderProgram, GLuint globalShaderProgram)
 	// Use clamp to edge to hide skybox edges:
 	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
 	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-
 
 	glBindVertexArray(VAO);
 

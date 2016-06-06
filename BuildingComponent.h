@@ -12,19 +12,20 @@
 
 class BuildingComponent {
 public:
-	enum Types
-	{
+	enum components {
 		RECTANGLE = 1,
 		ARCH = 2,
 		PYRAMID = 3
 	};
+	int componentType;
 	BuildingComponent(glm::vec3 dim, glm::vec3 origin, int type);
 	void draw(GLuint shaderProgram);
+	void bindTexture(GLuint texture);
 private:
+	GLuint textureID;
 	std::vector<glm::vec3> vertices;
 	GLuint VAO, VBO, EBO;
 	glm::mat4 toWorld;
-	int componentType;
 };
 
 #endif
