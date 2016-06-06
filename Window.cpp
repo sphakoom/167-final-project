@@ -7,12 +7,12 @@ Skybox * skybox;
 City * city;
 OBJObject* helicopter;
 
-GLint Window::shaderProgram, Window::skyboxShader, Window::cityShader;
+GLint Window::shaderProgram, Window::skyboxShader, Window::cityShader, Window::helicopterShader;
 
 // Default camera parameters
-glm::vec3 cam_pos(0.0f, 0.0f, 20.0f);		// e  | Position of camera
-glm::vec3 cam_look_at(0.0f, 0.0f, 0.0f);	// d  | This is where the camera looks at
-glm::vec3 cam_up(0.0f, 1.0f, 0.0f);			// up | What orientation "up" is
+glm::vec3 Window::cam_pos(0.0f, 0.0f, 20.0f);		// e  | Position of camera
+glm::vec3 Window::cam_look_at(0.0f, 0.0f, 0.0f);	// d  | This is where the camera looks at
+glm::vec3 Window::cam_up(0.0f, 1.0f, 0.0f);			// up | What orientation "up" is
 
 int Window::width;
 int Window::height;
@@ -41,6 +41,7 @@ void Window::initialize_objects()
 	shaderProgram = LoadShaders("../shader.vert", "../shader.frag");
 	skyboxShader = LoadShaders("../skybox.vert", "../skybox.frag");
 	cityShader = LoadShaders("../city.vert", "../city.frag");
+	helicopterShader = LoadShaders("../reflection.vert", "../reflection.frag");
 #else // Not windows
 	shaderProgram = LoadShaders("shader.vert", "shader.frag");
 	skyboxShader = LoadShaders("skybox.vert", "skybox.frag");
@@ -50,6 +51,7 @@ void Window::initialize_objects()
 	skybox = new Skybox();
 	//cube = new Cube();
 	city = new City();
+	helicopter = new OBJObject("ka-50.obj", "jade");
 }
 
 void Window::clean_up()
@@ -184,18 +186,13 @@ void Window::display_callback(GLFWwindow* window)
 
 	// Render the skybox
 	skybox->draw(skyboxShader, shaderProgram);
-	//cube->draw(shaderProgram);
 
-	city->draw(cityShader);
+	//city->draw(cityShader);
+	V = glm::lookAt(cam_pos, cam_look_at, cam_up);
 
 	// Switch back to regular shader
-	glUseProgram(shaderProgram);
-	//bunny->draw(shaderProgram, 0);
-
-	helicopter->draw(shaderProgram, 0);
-
-	
-	V = glm::lookAt(cam_pos, cam_look_at, cam_up);
+	glUseProgram(helicopterShader);
+	helicopter->draw();
 
 	// Gets events, including input such as keyboard and mouse or window resizing
 	glfwPollEvents();
