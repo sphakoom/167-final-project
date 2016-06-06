@@ -5,7 +5,7 @@ const char* window_title = "CSE 167 Final Project";
 Skybox * skybox;
 //Cube * cube;
 City * city;
-
+Plant *p;
 GLint Window::shaderProgram, Window::skyboxShader, Window::cityShader;
 
 // Default camera parameters
@@ -49,6 +49,7 @@ void Window::initialize_objects()
 	skybox = new Skybox();
 	//cube = new Cube();
 	city = new City();
+	p = new Plant();
 }
 
 void Window::clean_up()
@@ -185,12 +186,12 @@ void Window::display_callback(GLFWwindow* window)
 	skybox->draw(skyboxShader, shaderProgram);
 	//cube->draw(shaderProgram);
 
-	city->draw(cityShader);
+	//city->draw(cityShader);
 
 	// Switch back to regular shader
 	glUseProgram(shaderProgram);
 	//bunny->draw(shaderProgram, 0);
-
+	p->draw(shaderProgram);
 	
 	V = glm::lookAt(cam_pos, cam_look_at, cam_up);
 

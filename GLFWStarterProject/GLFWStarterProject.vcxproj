@@ -27,13 +27,18 @@
     <ClInclude Include="..\Drawable.h" />
     <ClInclude Include="..\Geode.h" />
     <ClInclude Include="..\Group.h" />
+    <ClInclude Include="..\LinkedList.h" />
+    <ClInclude Include="..\LSystem.h" />
     <ClInclude Include="..\main.h" />
     <ClInclude Include="..\MatrixTransform.h" />
     <ClInclude Include="..\Node.h" />
     <ClInclude Include="..\OBJObject.h" />
+    <ClInclude Include="..\Plant.h" />
     <ClInclude Include="..\Road.h" />
     <ClInclude Include="..\shader.h" />
     <ClInclude Include="..\Skybox.h" />
+    <ClInclude Include="..\Turtle.h" />
+    <ClInclude Include="..\Turtle1.h" />
     <ClInclude Include="..\Window.h" />
   </ItemGroup>
   <ItemGroup>
@@ -45,12 +50,17 @@
     <ClCompile Include="..\Drawable.cpp" />
     <ClCompile Include="..\Geode.cpp" />
     <ClCompile Include="..\Group.cpp" />
+    <ClCompile Include="..\LinkedList.cpp" />
+    <ClCompile Include="..\LSystem.cpp" />
     <ClCompile Include="..\main.cpp" />
     <ClCompile Include="..\MatrixTransform.cpp" />
     <ClCompile Include="..\OBJObject.cpp" />
+    <ClCompile Include="..\Plant.cpp" />
     <ClCompile Include="..\Road.cpp" />
     <ClCompile Include="..\shader.cpp" />
     <ClCompile Include="..\Skybox.cpp" />
+    <ClCompile Include="..\Turtle.cpp" />
+    <ClCompile Include="..\Turtle1.cpp" />
     <ClCompile Include="..\Window.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -112,7 +122,14 @@
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
-  <PropertyGroup />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <IncludePath>D:\Files\install;$(IncludePath)</IncludePath>
+    <LibraryPath>C:\Program Files %28x86%29\Windows Kits\10\Lib\10.0.10586.0\um\x64;$(LibraryPath)</LibraryPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <IncludePath>D:\Files\install;$(IncludePath)</IncludePath>
+    <LibraryPath>C:\Program Files %28x86%29\Windows Kits\10\Lib\10.0.10586.0\um\x64;$(LibraryPath)</LibraryPath>
+  </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
