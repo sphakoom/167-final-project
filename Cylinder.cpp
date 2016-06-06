@@ -7,7 +7,7 @@ Cylinder::Cylinder(const char * filename) : OBJObject(filename, "jade") {
 	glGenVertexArrays(1, &VAO);
 	glGenBuffers(1, &NBO);
 	glGenBuffers(1, &VBO);
-	glGenBuffers(1, &EBO);
+	//glGenBuffers(1, &EBO);
 
 	// Bind the Vertex Array Object first, then bind and set vertex buffer(s) and attribute pointer(s).
 	glBindVertexArray(VAO);
@@ -36,8 +36,8 @@ Cylinder::Cylinder(const char * filename) : OBJObject(filename, "jade") {
 		(GLvoid*)0);
 
 	// Bind indices
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(unsigned int) * indices.size(), &(indices[0]), GL_STATIC_DRAW);
+	//glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+	//glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(unsigned int) * indices.size(), &(indices[0]), GL_STATIC_DRAW);
 
 	glBindVertexArray(0); // Unbind VAO (it's always a good thing to unbind any buffer/array to prevent strange bugs), remember: do NOT unbind the EBO, keep it bound to this VAO
 
@@ -78,7 +78,7 @@ void Cylinder::draw() {
 	glUniform3f(glGetUniformLocation(shaderProgram, "material.specular"), 0.316228f, 0.316228f, 0.316228f);
 
 	glBindVertexArray(VAO);
-	glDrawElements(GL_TRIANGLES, (GLsizei)indices.size(), GL_UNSIGNED_INT, 0);
+	//glDrawElements(GL_TRIANGLES, (GLsizei)indices.size(), GL_UNSIGNED_INT, 0);
 	glBindVertexArray(0);
 }
 void Cylinder::update(glm::mat4 C) {
