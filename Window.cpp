@@ -57,6 +57,8 @@ void Window::initialize_objects()
 void Window::clean_up()
 {
 	delete(skybox);
+	delete(helicopter);
+	delete(city);
 	//delete(cube);
 	glDeleteProgram(shaderProgram);
 	glDeleteProgram(skyboxShader);
@@ -224,6 +226,10 @@ void Window::key_callback(GLFWwindow* window, int key, int scancode, int action,
 		case GLFW_KEY_D:
 			cam_pos.x += 1.0f;
 			cam_look_at.x += 1.0f;
+			break;
+		case GLFW_KEY_B:
+			printf("Regenerating buildings\n");
+			city->regenerate();
 			break;
 		default:
 			printf("Invalid key press\n");

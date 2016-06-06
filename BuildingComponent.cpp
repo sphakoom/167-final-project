@@ -138,7 +138,7 @@ void BuildingComponent::bindTexture(GLuint texture)
 	//this->textureID = texture;
 }
 
-void BuildingComponent::draw(GLuint shaderProgram, GLuint textureID)
+void BuildingComponent::draw(GLuint shaderProgram, Texture * texture)
 {
 	glm::mat4 MVP = Window::P * Window::V * toWorld;
 	// We need to calculate this because as of GLSL version 1.40 (OpenGL 3.1, released March 2009), gl_ModelViewProjectionMatrix has been
@@ -155,8 +155,8 @@ void BuildingComponent::draw(GLuint shaderProgram, GLuint textureID)
 	
 	// skybox cube
 	glActiveTexture(GL_TEXTURE1);
-	glBindTexture(GL_TEXTURE_2D, textureID);
-
+	glBindTexture(GL_TEXTURE_2D, texture->textureID);
+		
 	// Make sure no bytes are padded:
 	glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 
