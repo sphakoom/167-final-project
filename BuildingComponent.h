@@ -12,8 +12,15 @@
 
 class BuildingComponent {
 public:
-	BuildingComponent(float height, float width, float offsetx, float offsety);
-	void draw(GLuint shaderProgram);
+	enum components {
+		RECTANGLE = 1,
+		ARCH = 2,
+		PYRAMID = 3
+	};
+	int componentType;
+	BuildingComponent(glm::vec3 dim, glm::vec3 origin, int type);
+	void draw(GLuint shaderProgram, GLuint textureID);
+	void bindTexture(GLuint texture);
 private:
 	std::vector<glm::vec3> vertices;
 	GLuint VAO, VBO, EBO;

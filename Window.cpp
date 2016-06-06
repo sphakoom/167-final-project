@@ -187,7 +187,7 @@ void Window::display_callback(GLFWwindow* window)
 	// Render the skybox
 	skybox->draw(skyboxShader, shaderProgram);
 
-	//city->draw(cityShader);
+	city->draw(cityShader);
 	V = glm::lookAt(cam_pos, cam_look_at, cam_up);
 
 	// Switch back to regular shader
@@ -211,15 +211,19 @@ void Window::key_callback(GLFWwindow* window, int key, int scancode, int action,
 			break;
 		case GLFW_KEY_W:
 			cam_pos.z -= 1.0f;
+			cam_look_at.z -= 1.0f;
 			break;
 		case GLFW_KEY_A:
 			cam_pos.x -= 1.0f;
+			cam_look_at.x -= 1.0f;
 			break;
 		case GLFW_KEY_S:
 			cam_pos.z += 1.0f;
+			cam_look_at.z += 1.0f;
 			break;
 		case GLFW_KEY_D:
 			cam_pos.x += 1.0f;
+			cam_look_at.x += 1.0f;
 			break;
 		default:
 			printf("Invalid key press\n");

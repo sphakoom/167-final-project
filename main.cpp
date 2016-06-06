@@ -65,7 +65,6 @@ void print_versions()
 
 int main()
 {
-
 	//glutInit(&argc, argv);
 	// Create the GLFW window
 	window = Window::create_window(640, 480);

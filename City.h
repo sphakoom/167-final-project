@@ -10,6 +10,7 @@
 
 #include "Building.h"
 #include "Road.h"
+#include "Texture.h"
 
 class Building;
 class Road;
@@ -23,6 +24,7 @@ private:
 	void generateCity(int numBuildings, int roadFactor, int cityWidth, int cityDepth);
 	std::vector <Building *> buildings;
 	std::vector <Road *> roads;
+	std::vector <Texture *> textures;
 
 };
 
