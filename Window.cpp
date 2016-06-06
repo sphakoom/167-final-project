@@ -187,7 +187,7 @@ void Window::display_callback(GLFWwindow* window)
 	// Render the skybox
 	skybox->draw(skyboxShader, shaderProgram);
 
-	//city->draw(cityShader);
+	city->draw(cityShader);
 	V = glm::lookAt(cam_pos, cam_look_at, cam_up);
 
 	// Switch back to regular shader
