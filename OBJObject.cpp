@@ -12,7 +12,7 @@ OBJObject::OBJObject()
 	lightSource = glm::vec3(-30.0f, -50.0f, 20.0f);
 }
 
-OBJObject::OBJObject(const char *filepath, std::string material) 
+OBJObject::OBJObject(const char *filepath, std::string material)
 {
 	printf("Processing %s...", filepath);
 	pointSize = 1.0;
@@ -90,10 +90,14 @@ float OBJObject::getPointSize()
 	return this->pointSize;
 }
 
+glm::vec4 OBJObject::getPosition() {
+	return this->toWorld[3];
+}
+
 /*
  * Parses an OBJ file.
  */
-void OBJObject::parse(const char *filepath) 
+void OBJObject::parse(const char *filepath)
 {
 	float minX = numeric_limits<float>::infinity(),
 		minY = numeric_limits<float>::infinity(),
@@ -106,6 +110,11 @@ void OBJObject::parse(const char *filepath)
 	string line;
 	int debug = 0;
 	ifstream inFile(filepath);
+
+	if (inFile.fail() ) {
+		printf("File not found and/or is invalid\n");
+		return;
+	}
 
 	while( getline(inFile, line) ) {
 
@@ -135,18 +144,17 @@ void OBJObject::parse(const char *filepath)
 			int start1 = stoi(v1.substr(0, v1.find_first_of('/')));
 			int start2 = stoi(v2.substr(0, v2.find_first_of('/')));
 			int start3 = stoi(v3.substr(0, v3.find_first_of('/')));
-			if ("ka-50.obj" == filepath) {
-				indices.push_back(start1);
-				indices.push_back(start2);
-				indices.push_back(start3);
 
-			}
-			else {
+			if (filepath == "godzilla.obj") {
 				indices.push_back(start1 - 1);
 				indices.push_back(start2 - 1);
 				indices.push_back(start3 - 1);
 			}
-			
+			if (filepath == "ka-50.obj") {
+				indices.push_back(start1);
+				indices.push_back(start2);
+				indices.push_back(start3);
+			}
 		}
 		// Process vertices
 		else {
@@ -218,10 +226,6 @@ void OBJObject::parse(const char *filepath)
 	}
 
 	inFile.close();
-
-	for (unsigned int i = 0; i < vertices.size(); ++i) {
-		vertices[i] *= 10.0f;
-	}
 }
 
 void OBJObject::loadData()
@@ -253,7 +257,7 @@ void OBJObject::draw(GLuint shaderProgram, int lightOption)
 	// removed from the language. The user is expected to supply this matrix to the shader when using modern OpenGL.
 	GLuint MatrixID = glGetUniformLocation(shaderProgram, "MVP");
 	glUniformMatrix4fv(MatrixID, 1, GL_FALSE, &MVP[0][0]);
-	
+
 	GLuint ModelID = glGetUniformLocation(shaderProgram, "model");
 	glUniformMatrix4fv(ModelID, 1, GL_FALSE, &(this->toWorld[0][0]));
 
@@ -273,14 +277,14 @@ void OBJObject::draw(GLuint shaderProgram, int lightOption)
 	glUniform3f(glGetUniformLocation(shaderProgram, "dirLight.ambient"), 0.2f, 0.2f, 0.2f);
 	glUniform3f(glGetUniformLocation(shaderProgram, "dirLight.diffuse"), 0.5f, 0.5f, 0.5f);
 	glUniform3f(glGetUniformLocation(shaderProgram, "dirLight.specular"), 0.8f, 0.8f, 0.8f);
-	
+
 
 	glUniform3f(glGetUniformLocation(shaderProgram, "pointLights[0].position"), -this->lightSource[0], -this->lightSource[1], -this->lightSource[2]);
 	glUniform3f(glGetUniformLocation(shaderProgram, "pointLights[0].ambient"), 0.2f, 0.2f, 0.2f);
 	glUniform3f(glGetUniformLocation(shaderProgram, "pointLights[0].diffuse"), 0.5f, 0.5f, 0.5f);
 	glUniform3f(glGetUniformLocation(shaderProgram, "pointLights[0].specular"), 0.8f, 0.8f, 0.8f);
 	glUniform1f(glGetUniformLocation(shaderProgram, "pointLights[0].quadratic"), 0.5f);
-	
+
 	glUniform3f(glGetUniformLocation(shaderProgram, "spotLight.position"), -this->lightSource[0], -this->lightSource[1], -this->lightSource[2]);
 	glUniform3f(glGetUniformLocation(shaderProgram, "spotLight.direction"), this->lightSource[0], this->lightSource[1], this->lightSource[2]);
 	glUniform3f(glGetUniformLocation(shaderProgram, "spotLight.ambient"), 0.0f, 0.0f, 0.0f);
@@ -411,7 +415,7 @@ void OBJObject::draw(GLuint shaderProgram, glm::vec3 camera_position)
 	glBindVertexArray(0);
 }
 
-void OBJObject::update() 
+void OBJObject::update()
 {
 	spin(1.0f);
 }
@@ -465,7 +469,7 @@ void OBJObject::manipulateRasterizedPointSize(bool decrease)
 /**
 * Translates the object in the XYZ space.
 */
-void OBJObject::manipulateXYZ(glm::vec3 direction) 
+void OBJObject::manipulateXYZ(glm::vec3 direction)
 {
 	glm::tvec4<float> movement = glm::tvec4<float>(0.0f, 0.0f, 0.0f, 1.0f);
 
@@ -495,15 +499,12 @@ void OBJObject::manipulateXYZ(glm::vec3 direction)
 /**
 * Scales an object relative to its center
 */
-void OBJObject::scale(bool down)
+void OBJObject::scale(float scaleFactor)
 {
 	float scale;
-	if (down)
-		scale = 0.75f;
-	else
-		scale = 1.25f;
-	
-	
+	scale = scaleFactor;
+
+
 	// Translate object to origin, scale, and then translate back
 	// Scale matrix has the scalar along the diagonal
 	glm::mat4 scaleMat = glm::mat4(scale);
@@ -600,7 +601,7 @@ void OBJObject::changeLightDistance(double amt, int lightOption)
 /**
 * Resets all transformations on the object.
 */
-void OBJObject::reset() 
+void OBJObject::reset()
 {
 	toWorld = glm::mat4(1.0f);
 	this->pointSize = 1.0f;
@@ -628,7 +629,7 @@ void OBJObject::update(glm::vec3 newPosition) {
 	glm::vec4 newPos = proj * glm::vec4(newPosition, 1.0f);
 
 	this->toWorld = proj * this->toWorld;
-	
+
 	this->toWorld[3] = proj * glm::vec4(newPosition, 1.0f);
 	*/
 	this->toWorld[3] = glm::vec4(newPosition, 1.0f);

@@ -20,11 +20,13 @@ public:
 	City();
 	~City();
 	void draw(GLuint shaderProgram);
+	void regenerate();
+	std::vector <Texture *> textures;
+	int BRICK_TEXTURE, WINDOW_TEXTURE;
 private:
-	void generateCity(int numBuildings, int roadFactor, int cityWidth, int cityDepth);
+	void generateCity(int numBuildings, int roadFactor, int cityWidth, int cityDepth, bool regenerate);
 	std::vector <Building *> buildings;
 	std::vector <Road *> roads;
-	std::vector <Texture *> textures;
 
 };
 

@@ -9,6 +9,9 @@
 #include <time.h>
 
 #include "Window.h"
+#include "Texture.h"
+
+class Texture;
 
 class BuildingComponent {
 public:
@@ -19,7 +22,7 @@ public:
 	};
 	int componentType;
 	BuildingComponent(glm::vec3 dim, glm::vec3 origin, int type);
-	void draw(GLuint shaderProgram, GLuint textureID);
+	void draw(GLuint shaderProgram, Texture * texture);
 	void bindTexture(GLuint texture);
 private:
 	std::vector<glm::vec3> vertices;

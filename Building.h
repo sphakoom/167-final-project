@@ -5,6 +5,7 @@
 #include <GLFW/glfw3.h>
 
 #include "BuildingComponent.h"
+#include "Texture.h"
 
 class BuildingComponent;
 
@@ -17,7 +18,8 @@ public:
 	};
 
 	Building(int numComponents, int width, glm::vec3 origin, int type);
-	void draw(GLint shaderProgram, GLuint texture);
+	int buildingType;
+	void draw(GLint shaderProgram, std::vector<Texture *> & texture);
 private:
 	std::vector<BuildingComponent *> components;
 };

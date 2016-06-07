@@ -24,6 +24,7 @@ public:
 	std::vector<glm::vec3> getVertices();
 	std::vector<glm::vec3> getNormals();
 	std::vector<unsigned int> getIndices();
+	glm::vec4 getPosition();
 	std::string material;
 	float cutOff;
 
@@ -34,7 +35,7 @@ public:
 	void OBJObject::draw(GLuint shaderProgram, glm::vec3 camera_position);
 	void update();
 	void manipulateXYZ(glm::vec3 direction);
-	void scale(bool down = false);
+	void scale(float scaleFactor);
 	void manipulatePointSize(bool decrease = false);
 	void manipulateRasterizedPointSize(bool decrease = false);
 	void orbit(bool counter = false);
