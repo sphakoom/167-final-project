@@ -84,9 +84,9 @@ void Building::draw(GLint shaderProgram, std::vector<Texture *> & buildingTextur
 		// Windows, with brick on roof
 		for (int i = 0; i < components.size(); ++i) {
 			if (i == components.size() - 1)
-				components[i]->draw(shaderProgram, buildingTexture[0]);
+				components[i]->draw(shaderProgram, buildingTexture[3]);
 			else
-				components[i]->draw(shaderProgram, buildingTexture[1]);
+				components[i]->draw(shaderProgram, buildingTexture[2]);
 		}
 		break;
 	case ARCH:

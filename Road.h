@@ -12,8 +12,8 @@
 
 class Road {
 public:
-	Road(int width, int depth);
-	void draw(GLint shaderProgram);
+	Road(float width, float depth);
+	void draw(GLint shaderProgram, GLuint textureID);
 private:
 	GLuint VAO, VBO, EBO;
 	std::vector<glm::vec3> vertices;

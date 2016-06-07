@@ -186,5 +186,6 @@ void BuildingComponent::draw(GLuint shaderProgram, Texture * texture)
 	}
 
 	glBindVertexArray(0);
-	glDepthMask(GL_TRUE);
+
+	glBindTexture(GL_TEXTURE_2D, 0);
 }
