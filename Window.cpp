@@ -11,12 +11,14 @@ glm::vec3 newCamPos;
 glm::vec4 particleOffset;
 
 bool waterOn = false;
+bool isFire = false;
 
 Texture* texture;
 GLuint TextureID;
 GLuint CameraRight_worldspace_ID;
 GLuint CameraUp_worldspace_ID;
 GLuint ViewProjMatrixID;
+GLuint VertexArrayID;
 
 const int MaxParticles = 100000;
 Particle ParticlesContainer[MaxParticles];
@@ -112,7 +114,6 @@ void Window::initialize_objects()
 	// Accept fragment if it closer to the camera than the former one
 	glDepthFunc(GL_LESS);
 
-	GLuint VertexArrayID;
 	glGenVertexArrays(1, &VertexArrayID);
 	glBindVertexArray(VertexArrayID);
 
@@ -133,7 +134,7 @@ void Window::initialize_objects()
 		ParticlesContainer[i].cameradistance = -1.0f;
 	}
 
-	texture = new Texture("Particle-Texture.ppm");
+	texture = new Texture("Particle-Texture2.ppm");
 
 	// The VBO containing the 4 vertices of the particles.
 	// Thanks to instancing, they will be shared by all particles.
@@ -171,6 +172,16 @@ void Window::clean_up()
 	//delete(cube);
 	glDeleteProgram(shaderProgram);
 	glDeleteProgram(skyboxShader);
+
+	delete[] g_particule_position_size_data;
+
+	// Cleanup VBO and shader
+	glDeleteBuffers(1, &particles_color_buffer);
+	glDeleteBuffers(1, &particles_position_buffer);
+	glDeleteBuffers(1, &billboard_vertex_buffer);
+	glDeleteProgram(particleShader);
+	glDeleteTextures(1, &TextureID);
+	glDeleteVertexArrays(1, &VertexArrayID);
 }
 
 GLFWwindow* Window::create_window(int width, int height)
@@ -253,26 +264,73 @@ void Window::idle_callback(GLFWwindow* window)
 	if (newparticles > (int)(0.016f*10000.0))
 		newparticles = (int)(0.016f*10000.0);
 
+	int firstIndex;
+	int secondIndex;
+
 	for (int i = 0; i<newparticles; i++) {
-		int particleIndex;
+		int particleIndex = 0;
+		bool firstLoop = false;
+		bool secondLoop = false;
+
 		for (int i = LastUsedParticle; i<MaxParticles; i++) {
 			if (ParticlesContainer[i].life < 0) {
 				LastUsedParticle = i;
 				particleIndex = i;
+				firstLoop = true;
+				break;
 			}
 		}
 
-		for (int i = 0; i<LastUsedParticle; i++) {
-			if (ParticlesContainer[i].life < 0) {
-				LastUsedParticle = i;
-				particleIndex = i;
+		if (!firstLoop) {
+			for (int i = 0; i<LastUsedParticle; i++) {
+				if (ParticlesContainer[i].life < 0) {
+					LastUsedParticle = i;
+					particleIndex = i;
+					secondLoop = true;
+					break;
+				}
 			}
 		}
+		
+		if (!firstLoop && !secondLoop) {
+			particleIndex = 0;
+		}
+		
+		//printf("particleIndex: %d\n", particleIndex);
 		ParticlesContainer[particleIndex].life = 5.0f; // helicopter particle will live 5 seconds.
-		ParticlesContainer[particleIndex].pos = glm::vec3(helicopter->getPosition() + particleOffset);
 
-		float spread = 5.0f;
-		glm::vec3 maindir = glm::vec3(0.0f, -10.0f, 0.0f);
+		if (rand() % 5 == 0) {
+			isFire = false;
+			ParticlesContainer[particleIndex].pos = glm::vec3(helicopter->getPosition() + particleOffset);
+		}
+		else if (rand() % 5 == 1) {
+			isFire = true;
+			ParticlesContainer[particleIndex].pos = glm::vec3(0.0f, 0.0f, 0.0f);
+		}
+		else if (rand() % 5 == 2) {
+			isFire = true;
+			ParticlesContainer[particleIndex].pos = glm::vec3(20.0f, 0.0f, -30.0f);
+		}
+		else if (rand() % 5 == 3) {
+			isFire = true;
+			ParticlesContainer[particleIndex].pos = glm::vec3(30.0f, 0.0f, 10.0f);
+		}
+		else {
+			isFire = true;
+			ParticlesContainer[particleIndex].pos = glm::vec3(10.0f, 0.0f, -10.0f);
+		}
+
+		float spread;
+		glm::vec3 maindir;
+
+		if (isFire) {
+			spread = 0.5;
+			maindir = glm::vec3(0.0f, 10.0f, 0.0f);
+		}
+		else {
+			spread = 2.0f;
+			maindir = glm::vec3(0.0f, -10.0f, 0.0f);
+		}
 		// Very bad way to generate a random direction; 
 		// See for instance http://stackoverflow.com/questions/5408276/python-uniform-spherical-distribution instead,
 		// combined with some user-controlled parameters (main direction, spread, etc)
@@ -286,10 +344,19 @@ void Window::idle_callback(GLFWwindow* window)
 
 
 		// Very bad way to generate a random color
-		ParticlesContainer[particleIndex].r = 0;
-		ParticlesContainer[particleIndex].g = rand() % 256;
-		ParticlesContainer[particleIndex].b = rand() % 256;
-		ParticlesContainer[particleIndex].a = (rand() % 256) / 3;
+
+		if (isFire) {
+			ParticlesContainer[particleIndex].r = rand() % 256;
+			ParticlesContainer[particleIndex].g = 0;
+			ParticlesContainer[particleIndex].b = 0;
+			ParticlesContainer[particleIndex].a = (rand() % 256) / 3;
+		}
+		else {
+			ParticlesContainer[particleIndex].r = 0;
+			ParticlesContainer[particleIndex].g = rand() % 256;
+			ParticlesContainer[particleIndex].b = rand() % 256;
+			ParticlesContainer[particleIndex].a = (rand() % 256) / 3;
+		}
 
 		ParticlesContainer[particleIndex].size = (rand() % 1000) / 2000.0f + 0.1f;
 
@@ -310,7 +377,7 @@ void Window::idle_callback(GLFWwindow* window)
 				// Simulate simple physics : gravity only, no collisions
 				p.speed += glm::vec3(0.0f, -2.0f, 0.0f) * (float)delta * 0.2f;
 				p.pos += p.speed * (float)delta;
-				p.cameradistance = glm::length2(p.pos - CameraPosition);
+				//p.cameradistance = glm::length2(p.pos - CameraPosition);
 				//ParticlesContainer[i].pos += glm::vec3(0.0f,10.0f, 0.0f) * (float)delta;
 
 				// Fill the GPU buffer
@@ -499,7 +566,7 @@ void Window::display_callback(GLFWwindow* window)
 								 // for(i in ParticlesCount) : glDrawArrays(GL_TRIANGLE_STRIP, 0, 4), 
 								 // but faster.
 	if (waterOn) {
-		glDrawArraysInstanced(GL_TRIANGLE_STRIP, 0, 4, 30000);
+		glDrawArraysInstanced(GL_TRIANGLE_STRIP, 0, 4, 50000);
 	}
 
 	glDisableVertexAttribArray(0);
@@ -512,9 +579,9 @@ void Window::display_callback(GLFWwindow* window)
 	helicopterPos = glm::vec3(helicopter->getPosition());
 	newCamPos = glm::vec3(helicopter->getPosition());
 
-	printf("helicopterPos.x: %f\n", helicopterPos.x);
-	printf("helicopterPos.y: %f\n", helicopterPos.y);
-	printf("helicopterPos.z: %f\n", helicopterPos.z);
+	//printf("helicopterPos.x: %f\n", helicopterPos.x);
+	//printf("helicopterPos.y: %f\n", helicopterPos.y);
+	//printf("helicopterPos.z: %f\n", helicopterPos.z);
 
 	newCamPos.x -= 3.0f;
 	newCamPos.y += 1.0f;
