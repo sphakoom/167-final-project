@@ -145,9 +145,9 @@ void OBJObject::parse(const char *filepath)
 			int start2 = stoi(v2.substr(0, v2.find_first_of('/')));
 			int start3 = stoi(v3.substr(0, v3.find_first_of('/')));
 
-			indices.push_back(start1);
-			indices.push_back(start2);
-			indices.push_back(start3);
+			indices.push_back(start1-1);
+			indices.push_back(start2-1);
+			indices.push_back(start3-1);
 			
 		}
 		// Process vertices

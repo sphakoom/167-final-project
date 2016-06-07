@@ -6,6 +6,7 @@ Skybox * skybox;
 //Cube * cube;
 City * city;
 OBJObject* helicopter;
+OBJObject * godzilla;
 glm::vec3 helicopterPos;
 glm::vec3 newCamPos;
 glm::vec4 particleOffset;
@@ -79,6 +80,7 @@ void Window::initialize_objects()
 	//cube = new Cube();
 	city = new City();
 	helicopter = new OBJObject("ka-50.obj", "jade");
+	godzilla = new OBJObject("godzilla.obj", "jade");
 
 	glm::mat4 translateMatrix = glm::mat4(
 		glm::tvec4<float>(1.0f, 0.0f, 0.0f, 0.0f),
@@ -508,7 +510,7 @@ void Window::display_callback(GLFWwindow* window)
 
 	// ------------------- end particle stuff ---------------------------
 
-	city->draw(cityShader);
+	//city->draw(cityShader);
 	helicopterPos = glm::vec3(helicopter->getPosition());
 	newCamPos = glm::vec3(helicopter->getPosition());
 
@@ -520,11 +522,13 @@ void Window::display_callback(GLFWwindow* window)
 	newCamPos.y += 1.0f;
 	newCamPos.z -= 15.0f;
 
-	V = glm::lookAt(newCamPos, helicopterPos, cam_up);
+	//V = glm::lookAt(newCamPos, helicopterPos, cam_up);
 
+	glUseProgram(shaderProgram);
+	godzilla->draw(shaderProgram, 1);
 	// Switch back to regular shader
 	glUseProgram(helicopterShader);
-	helicopter->draw();
+	//helicopter->draw();
 
 	// Gets events, including input such as keyboard and mouse or window resizing
 	glfwPollEvents();
