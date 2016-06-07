@@ -243,6 +243,8 @@ void Window::idle_callback(GLFWwindow* window)
 {
 
 	// ---------------- particle stuff -------------------------
+	// most of the code from: http://www.opengl-tutorial.org/intermediate-tutorials/billboards-particles/particles-instancing/
+
 	double currentTime = glfwGetTime();
 	double delta = currentTime - lastTime;
 	lastTime = currentTime;
