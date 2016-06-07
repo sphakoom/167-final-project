@@ -499,7 +499,7 @@ void Window::display_callback(GLFWwindow* window)
 								 // for(i in ParticlesCount) : glDrawArrays(GL_TRIANGLE_STRIP, 0, 4), 
 								 // but faster.
 	if (waterOn) {
-		glDrawArraysInstanced(GL_TRIANGLE_STRIP, 0, 4, 100000);
+		glDrawArraysInstanced(GL_TRIANGLE_STRIP, 0, 4, 30000);
 	}
 
 	glDisableVertexAttribArray(0);
