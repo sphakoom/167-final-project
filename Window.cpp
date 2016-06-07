@@ -358,7 +358,7 @@ void Window::idle_callback(GLFWwindow* window)
 
 		if (isFire || isGodzilla) {
 			ParticlesContainer[particleIndex].r = rand() % 256;
-			ParticlesContainer[particleIndex].g = 0;
+			ParticlesContainer[particleIndex].g = rand() % 256;
 			ParticlesContainer[particleIndex].b = 0;
 			ParticlesContainer[particleIndex].a = rand() % 256;
 		}
@@ -386,7 +386,17 @@ void Window::idle_callback(GLFWwindow* window)
 			p.life -= delta;
 			if (p.life > 0.0f) {
 				// Simulate simple physics : gravity only, no collisions
-				if (isGodzilla) {
+				if (isGodzilla || isFire) {
+					if (p.life < 1.0f) {
+						p.r = 0;
+						p.g = 0;
+						p.b = 0;
+					}
+					else {
+						p.r = 255;
+						p.g = 0;
+						p.b = 0;
+					}
 					p.speed += glm::vec3(0.0f, -20.0f, 0.0f) * (float)delta * 0.0001f;
 					p.pos += p.speed * (float)delta;
 				}
