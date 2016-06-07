@@ -56,38 +56,38 @@ BuildingComponent::BuildingComponent(glm::vec3 dim, glm::vec3 origin, int type)
 	switch (type) {
 		case RECTANGLE:
 			// FRONT vertices
-			vertices.push_back(glm::vec3(-halfWidth + origin.x, origin.y, halfDepth));	// bottom left
-			vertices.push_back(glm::vec3(halfWidth + origin.x, origin.y, halfDepth));	// bottom right
-			vertices.push_back(glm::vec3(halfWidth + origin.x, origin.y + dim.y, halfDepth));	// top right
-			vertices.push_back(glm::vec3(-halfWidth + origin.x, origin.y + dim.y, halfDepth));	// top left
+			vertices.push_back(glm::vec3(-halfWidth + origin.x, origin.y, halfDepth + origin.z));	// bottom left
+			vertices.push_back(glm::vec3(halfWidth + origin.x, origin.y, halfDepth + origin.z));	// bottom right
+			vertices.push_back(glm::vec3(halfWidth + origin.x, origin.y + dim.y, halfDepth + origin.z));	// top right
+			vertices.push_back(glm::vec3(-halfWidth + origin.x, origin.y + dim.y, halfDepth + origin.z));	// top left
 
 			// Back vertices
-			vertices.push_back(glm::vec3(-halfWidth + origin.x, origin.y, -halfDepth));	// bottom left
-			vertices.push_back(glm::vec3(halfWidth + origin.x, origin.y, -halfDepth));	// bottom right
-			vertices.push_back(glm::vec3(halfWidth + origin.x, dim.y + origin.y, -halfDepth));	// top right
-			vertices.push_back(glm::vec3(-halfWidth + origin.x, dim.y + origin.y, -halfDepth));	// top left
+			vertices.push_back(glm::vec3(-halfWidth + origin.x, origin.y, -halfDepth + origin.z));	// bottom left
+			vertices.push_back(glm::vec3(halfWidth + origin.x, origin.y, -halfDepth + origin.z));	// bottom right
+			vertices.push_back(glm::vec3(halfWidth + origin.x, dim.y + origin.y, -halfDepth + origin.z));	// top right
+			vertices.push_back(glm::vec3(-halfWidth + origin.x, dim.y + origin.y, -halfDepth + origin.z));	// top left
 			break;
 		case ARCH:
 			// FRONT vertices
-			vertices.push_back(glm::vec3(-halfWidth + origin.x, origin.y, halfDepth));	// bottom left
-			vertices.push_back(glm::vec3(halfWidth + origin.x, origin.y, halfDepth));	// bottom right
-			vertices.push_back(glm::vec3(halfWidth + origin.x - 0.25f, origin.y + dim.y, halfDepth));	// top right
-			vertices.push_back(glm::vec3(-halfWidth + origin.x + 0.25f, origin.y + dim.y, halfDepth));	// top left
+			vertices.push_back(glm::vec3(-halfWidth + origin.x, origin.y, halfDepth + origin.z));	// bottom left
+			vertices.push_back(glm::vec3(halfWidth + origin.x, origin.y, halfDepth + origin.z));	// bottom right
+			vertices.push_back(glm::vec3(halfWidth + origin.x - 0.25f, origin.y + dim.y, halfDepth + origin.z));	// top right
+			vertices.push_back(glm::vec3(-halfWidth + origin.x + 0.25f, origin.y + dim.y, halfDepth + origin.z));	// top left
 
 			// Back vertices
-			vertices.push_back(glm::vec3(-halfWidth + origin.x, origin.y, -halfDepth));	// bottom left
-			vertices.push_back(glm::vec3(halfWidth + origin.x, origin.y, -halfDepth));	// bottom right
-			vertices.push_back(glm::vec3(halfWidth + origin.x - 0.25f, dim.y + origin.y, -halfDepth));	// top right
-			vertices.push_back(glm::vec3(-halfWidth + origin.x + 0.25f, dim.y + origin.y, -halfDepth));	// top left			
+			vertices.push_back(glm::vec3(-halfWidth + origin.x, origin.y, -halfDepth + origin.z));	// bottom left
+			vertices.push_back(glm::vec3(halfWidth + origin.x, origin.y, -halfDepth + origin.z));	// bottom right
+			vertices.push_back(glm::vec3(halfWidth + origin.x - 0.25f, dim.y + origin.y, -halfDepth + origin.z));	// top right
+			vertices.push_back(glm::vec3(-halfWidth + origin.x + 0.25f, dim.y + origin.y, -halfDepth + origin.z));	// top left			
 			break;
 		case PYRAMID:
 			// Base vertices
-			vertices.push_back(glm::vec3(-halfWidth + origin.x, origin.y, halfDepth)); // front left
-			vertices.push_back(glm::vec3(halfWidth + origin.x, origin.y, halfDepth));	// front right
-			vertices.push_back(glm::vec3(halfWidth + origin.x, origin.y, -halfDepth)); // back right
-			vertices.push_back(glm::vec3(-halfWidth + origin.x, origin.y, -halfDepth));	// back left
+			vertices.push_back(glm::vec3(-halfWidth + origin.x, origin.y, halfDepth + origin.z)); // front left
+			vertices.push_back(glm::vec3(halfWidth + origin.x, origin.y, halfDepth + origin.z));	// front right
+			vertices.push_back(glm::vec3(halfWidth + origin.x, origin.y, -halfDepth + origin.z)); // back right
+			vertices.push_back(glm::vec3(-halfWidth + origin.x, origin.y, -halfDepth + origin.z));	// back left
 			// Top vertex
-			vertices.push_back(glm::vec3(origin.x, origin.y + ((float)rand() *2.5f / RAND_MAX), 0.0f));
+			vertices.push_back(glm::vec3(origin.x, origin.y + ((float)rand() *2.5f / RAND_MAX), origin.z));
 			break;
 		default:
 			break;

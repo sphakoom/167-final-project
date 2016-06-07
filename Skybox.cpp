@@ -78,13 +78,28 @@ Skybox::Skybox() {
 
 	// Load all the textures
 	// Right, left, top, bottom, front, back
+	/*
 	faces.push_back("mp_midnight/midnight-silence_rt.ppm");
 	faces.push_back("mp_midnight/midnight-silence_lf.ppm");
 	faces.push_back("mp_midnight/midnight-silence_up.ppm");
 	faces.push_back("mp_midnight/midnight-silence_dn.ppm");
 	faces.push_back("mp_midnight/midnight-silence_bk.ppm");
 	faces.push_back("mp_midnight/midnight-silence_ft.ppm");
+	
+	faces.push_back("mp_met/met_rt.ppm");
+	faces.push_back("mp_met/met_lf.ppm");
+	faces.push_back("mp_met/met_up.ppm");
+	faces.push_back("mp_met/met_dn.ppm");
+	faces.push_back("mp_met/met_bk.ppm");
+	faces.push_back("mp_met/met_ft.ppm");
+	*/
 
+	faces.push_back("ely_hills/hills_rt.ppm");
+	faces.push_back("ely_hills/hills_lf.ppm");
+	faces.push_back("ely_hills/hills_up.ppm");
+	faces.push_back("ely_hills/hills_dn.ppm");
+	faces.push_back("ely_hills/hills_bk.ppm");
+	faces.push_back("ely_hills/hills_ft.ppm");
 	this->cubemapTexture = this->loadCubemap();
 }
 
