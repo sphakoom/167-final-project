@@ -111,6 +111,11 @@ void OBJObject::parse(const char *filepath)
 	int debug = 0;
 	ifstream inFile(filepath);
 
+	if (inFile.fail() ) {
+		printf("File not found and/or is invalid\n");
+		return;
+	}
+
 	while( getline(inFile, line) ) {
 
 		// Skip comments

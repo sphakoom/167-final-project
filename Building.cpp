@@ -6,6 +6,8 @@ Building::Building(int numComponents, int width, glm::vec3 origin, int type)
 	float savedHeight = 0.0f;
 	float widthF = width;
 
+	buildingType = type;
+
 	switch(type) {
 		case TOWER: {
 			for (int i = 0; i < numComponents; ++i) {
@@ -19,8 +21,10 @@ Building::Building(int numComponents, int width, glm::vec3 origin, int type)
 				}
 				else {
 					float widthFactor = (float)rand() / RAND_MAX;
-					widthFactor = (widthFactor < 0.5f) ? 0.65f : widthFactor;
-					components.push_back(new BuildingComponent(glm::vec3(widthF * widthFactor, height, widthF * widthFactor), glm::vec3(origin.x, savedHeight, 0.0f), type));
+					widthFactor = (i == numComponents - 1) ? 1.0f : (widthFactor < 0.5f) ? 0.65f : widthFactor;
+					widthF *= widthFactor;
+					components.push_back(new BuildingComponent(glm::vec3(widthF, height, widthF * widthFactor), glm::vec3(origin.x, savedHeight, 0.0f), type));
+					
 				}
 				savedHeight += height;
 			}
@@ -74,11 +78,30 @@ Building::Building(int numComponents, int width, glm::vec3 origin, int type)
 	//buildingTextures.push_back(loadTexture());
 }
 
-void Building::draw(GLint shaderProgram, GLuint buildingTexture)
+void Building::draw(GLint shaderProgram, std::vector<Texture *> & buildingTexture)
 {
-	for (int i = 0; i < components.size(); ++i) {
-		glUniform1i(glGetUniformLocation(shaderProgram, "buildingPart"), components[i]->componentType);
-		components[i]->bindTexture(buildingTexture);
-		components[i]->draw(shaderProgram, buildingTexture);
+	switch (buildingType) {
+	case TOWER:
+		// Windows, with brick on roof
+		for (int i = 0; i < components.size(); ++i) {
+			if (i == components.size() - 1)
+				components[i]->draw(shaderProgram, buildingTexture[0]);
+			else
+				components[i]->draw(shaderProgram, buildingTexture[1]);
+		}
+		break;
+	case ARCH:
+		// All brick
+		for (int i = 0; i < components.size(); ++i) {
+			components[i]->draw(shaderProgram, buildingTexture[0]);
+		}
+		break;
+	case SKYSCRAPER:
+		// All windows
+		for (int i = 0; i < components.size(); ++i) {
+			components[i]->draw(shaderProgram, buildingTexture[1]);
+		}
+		break;
 	}
+	
 }
