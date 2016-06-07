@@ -4,6 +4,8 @@ City::City()
 {
 	textures.push_back(new Texture("bricks.ppm"));
 	textures.push_back(new Texture("city7.ppm"));
+	textures.push_back(new Texture("city5.ppm"));
+	textures.push_back(new Texture("brick1.ppm"));
 	textures.push_back(new Texture("road.ppm"));
 
 	generateCity(8, 0, 12, 12, false);
@@ -73,6 +75,6 @@ void City::draw(GLuint shaderProgram)
 		buildings[i]->draw(shaderProgram, textures);
 	}
 	for (int i = 0; i < roads.size(); ++i) {
-		roads[i]->draw(shaderProgram, textures[2]->textureID);
+		roads[i]->draw(shaderProgram, textures[4]->textureID);
 	}
 }
