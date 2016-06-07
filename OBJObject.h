@@ -24,6 +24,7 @@ public:
 	std::vector<glm::vec3> getVertices();
 	std::vector<glm::vec3> getNormals();
 	std::vector<unsigned int> getIndices();
+	glm::vec4 getPosition();
 	std::string material;
 	float cutOff;
 

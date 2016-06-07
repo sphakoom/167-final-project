@@ -25,54 +25,42 @@
     <ClInclude Include="..\Cube.h" />
     <ClInclude Include="..\Cylinder.h" />
     <ClInclude Include="..\Drawable.h" />
-    <ClInclude Include="..\ElapsedTime.h" />
     <ClInclude Include="..\Geode.h" />
     <ClInclude Include="..\Group.h" />
-    <ClInclude Include="..\Interpolator.h" />
     <ClInclude Include="..\main.h" />
     <ClInclude Include="..\MatrixTransform.h" />
     <ClInclude Include="..\Node.h" />
     <ClInclude Include="..\OBJObject.h" />
     <ClInclude Include="..\Particle.h" />
-    <ClInclude Include="..\ParticleEffect.h" />
-    <ClInclude Include="..\ParticleEmitter.h" />
-    <ClInclude Include="..\ParticleSystemPCH.h" />
-    <ClInclude Include="..\PivotCamera.h" />
-    <ClInclude Include="..\Random.h" />
     <ClInclude Include="..\Road.h" />
     <ClInclude Include="..\shader.h" />
     <ClInclude Include="..\Skybox.h" />
-    <ClInclude Include="..\SphereEmitter.h" />
     <ClInclude Include="..\Texture.h" />
     <ClInclude Include="..\Window.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Building.cpp" />
     <ClCompile Include="..\BuildingComponent.cpp" />
-    <ClCompile Include="..\Camera.cpp" />
     <ClCompile Include="..\City.cpp" />
     <ClCompile Include="..\Cube.cpp" />
     <ClCompile Include="..\Cylinder.cpp" />
     <ClCompile Include="..\Drawable.cpp" />
-    <ClCompile Include="..\ElapsedTime.cpp" />
     <ClCompile Include="..\Geode.cpp" />
     <ClCompile Include="..\Group.cpp" />
     <ClCompile Include="..\main.cpp" />
     <ClCompile Include="..\MatrixTransform.cpp" />
     <ClCompile Include="..\OBJObject.cpp" />
-    <ClCompile Include="..\ParticleEffect.cpp" />
-    <ClCompile Include="..\ParticleSystemPCH.cpp" />
-    <ClCompile Include="..\PivotCamera.cpp" />
     <ClCompile Include="..\Road.cpp" />
     <ClCompile Include="..\shader.cpp" />
     <ClCompile Include="..\Skybox.cpp" />
-    <ClCompile Include="..\SphereEmitter.cpp" />
     <ClCompile Include="..\Texture.cpp" />
     <ClCompile Include="..\Window.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\city.frag" />
     <None Include="..\city.vert" />
+    <None Include="..\particle.frag" />
+    <None Include="..\particle.vert" />
     <None Include="..\reflection.frag" />
     <None Include="..\reflection.vert" />
     <None Include="..\shader.frag" />

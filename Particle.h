@@ -1,23 +1,32 @@
-#pragma once
+#include <stdio.h>
+#include <stdlib.h>
 
-struct Particle
-{
-    Particle() 
-        : m_Position(0)
-        , m_Velocity(0)
-        , m_Color(0)
-        , m_fRotate(0)
-        , m_fAge(0)
-        , m_fLifeTime(0)
-    {}
+#include <vector>
+#include <algorithm>
 
-    glm::vec3   m_Position; // Center point of particle
-    glm::vec3   m_Velocity; // Current particle velocity
-    glm::vec4   m_Color;    // Particle color
-    float       m_fRotate;  // Rotate the particle the center
-    float       m_fSize;    // Size of the particle
-    float       m_fAge;
-    float       m_fLifeTime;
+#include <GL/glew.h>
+
+#include <GLFW/glfw3.h>
+
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtx/norm.hpp>
+using namespace glm;
+
+
+#include "shader.h"
+#include "Texture.h"
+
+// CPU representation of a particle
+struct Particle {
+	glm::vec3 pos, speed;
+	unsigned char r, g, b, a; // Color
+	float size, angle, weight;
+	float life; // Remaining life of the particle. if <0 : dead and unused.
+	float cameradistance; // *Squared* distance to the camera. if dead : -1.0f
+
+	bool operator<(const Particle& that) const {
+		// Sort in reverse order : far particles drawn first.
+		return this->cameradistance > that.cameradistance;
+	}
 };
-
-typedef std::vector<Particle> ParticleBuffer;
