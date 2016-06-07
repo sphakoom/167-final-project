@@ -14,7 +14,7 @@ public:
 	virtual void draw(GLuint shaderProgram,int) = 0;
 	virtual void update() = 0;
 	virtual void manipulateXYZ(glm::vec3) = 0;
-	virtual void scale(bool down = false) = 0;
+	virtual void scale(float scaleFactor) = 0;
 	virtual void manipulatePointSize(bool decrease = false) = 0;
 	virtual void manipulateRasterizedPointSize(bool decrease = false) = 0;
 	virtual void orbit(bool counter = false) = 0;

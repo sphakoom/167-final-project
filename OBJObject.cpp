@@ -145,9 +145,16 @@ void OBJObject::parse(const char *filepath)
 			int start2 = stoi(v2.substr(0, v2.find_first_of('/')));
 			int start3 = stoi(v3.substr(0, v3.find_first_of('/')));
 
-			indices.push_back(start1-1);
-			indices.push_back(start2-1);
-			indices.push_back(start3-1);
+			if (filepath == "godzilla.obj") {
+				indices.push_back(start1 - 1);
+				indices.push_back(start2 - 1);
+				indices.push_back(start3 - 1);
+			}
+			if (filepath == "ka-50.obj") {
+				indices.push_back(start1);
+				indices.push_back(start2);
+				indices.push_back(start3);
+			}
 			
 		}
 		// Process vertices
@@ -492,13 +499,10 @@ void OBJObject::manipulateXYZ(glm::vec3 direction)
 /**
 * Scales an object relative to its center
 */
-void OBJObject::scale(bool down)
+void OBJObject::scale(float scaleFactor)
 {
 	float scale;
-	if (down)
-		scale = 0.75f;
-	else
-		scale = 1.25f;
+	scale = scaleFactor;
 	
 	
 	// Translate object to origin, scale, and then translate back

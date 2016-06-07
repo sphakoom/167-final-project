@@ -13,6 +13,7 @@ glm::vec4 particleOffset;
 
 bool waterOn = false;
 bool isFire = false;
+bool isGodzilla = false;
 
 Texture* texture;
 GLuint TextureID;
@@ -96,19 +97,20 @@ void Window::initialize_objects()
 		glm::tvec4<float>(0.0f, 0.0f, 1.0f, 0.0f),
 		glm::tvec4<float>(-helicopter->toWorld[3][0], -helicopter->toWorld[3][1], -helicopter->toWorld[3][2], 1.0f));
 
-	glm::mat4 scaleMatrix = glm::mat4(
-		glm::vec4(5.0f, 0.0f, 0.0f, 0.0f),
-		glm::vec4(0.0f, 5.0f, 0.0f, 0.0f),
-		glm::vec4(0.0f, 0.0f, 5.0f, 0.0f),
-		glm::vec4(0.0f, 0.0f, 0.0f, 1.0f));
-
 	helicopter->toWorld[3] = helicopter->toWorld[3] + glm::vec4(0.5f, 0.0f, 0.0f, 0.0f);
-	helicopter->toWorld = translateMatrix * scaleMatrix * originMatrix * helicopter->toWorld;
+	helicopter->scale(5.0f);
+
+	godzilla->scale(20.0f);
+	godzilla->spin(90.0f);
+
+	godzilla->toWorld[3].x = -25.0f;
+	godzilla->toWorld[3].y = 10.0f;
+	godzilla->toWorld[3].z = 2.0f;
 
 	//helicopter->toWorld[3].y += 2.0f;
-	particleOffset.x = 0.7f;
-	particleOffset.y = -1.0f;
-	particleOffset.z = 0.0f;
+	particleOffset.x = 10.3f;
+	particleOffset.y = 25.0f;
+	particleOffset.z = 43.0f;
 
 	// ------------------ Particle stuff -----------------------------
 	// Enable depth test
@@ -303,11 +305,14 @@ void Window::idle_callback(GLFWwindow* window)
 
 		if (rand() % 5 == 0) {
 			isFire = false;
+			isGodzilla = false;
 			ParticlesContainer[particleIndex].pos = glm::vec3(helicopter->getPosition() + particleOffset);
 		}
 		else if (rand() % 5 == 1) {
-			isFire = true;
-			ParticlesContainer[particleIndex].pos = glm::vec3(0.0f, 0.0f, 0.0f);
+			// --------Godzilla's position and helicopter's position is mixed up, need to fix to get particles right-------
+			isGodzilla = true;
+			isFire = false;
+			ParticlesContainer[particleIndex].pos = glm::vec3(-17.4f, 18.0f, 2.6f);
 		}
 		else if (rand() % 5 == 2) {
 			isFire = true;
@@ -329,6 +334,10 @@ void Window::idle_callback(GLFWwindow* window)
 			spread = 0.5;
 			maindir = glm::vec3(0.0f, 10.0f, 0.0f);
 		}
+		else if (isGodzilla) {
+			spread = 5.0f;
+			maindir = glm::vec3(45.0f, 0.0f, 0.0f);
+		}
 		else {
 			spread = 2.0f;
 			maindir = glm::vec3(0.0f, -10.0f, 0.0f);
@@ -347,17 +356,17 @@ void Window::idle_callback(GLFWwindow* window)
 
 		// Very bad way to generate a random color
 
-		if (isFire) {
+		if (isFire || isGodzilla) {
 			ParticlesContainer[particleIndex].r = rand() % 256;
 			ParticlesContainer[particleIndex].g = 0;
 			ParticlesContainer[particleIndex].b = 0;
-			ParticlesContainer[particleIndex].a = (rand() % 256) / 3;
+			ParticlesContainer[particleIndex].a = rand() % 256;
 		}
 		else {
 			ParticlesContainer[particleIndex].r = 0;
 			ParticlesContainer[particleIndex].g = rand() % 256;
 			ParticlesContainer[particleIndex].b = rand() % 256;
-			ParticlesContainer[particleIndex].a = (rand() % 256) / 3;
+			ParticlesContainer[particleIndex].a = rand() % 256;
 		}
 
 		ParticlesContainer[particleIndex].size = (rand() % 1000) / 2000.0f + 0.1f;
@@ -377,8 +386,14 @@ void Window::idle_callback(GLFWwindow* window)
 			p.life -= delta;
 			if (p.life > 0.0f) {
 				// Simulate simple physics : gravity only, no collisions
-				p.speed += glm::vec3(0.0f, -2.0f, 0.0f) * (float)delta * 0.2f;
-				p.pos += p.speed * (float)delta;
+				if (isGodzilla) {
+					p.speed += glm::vec3(0.0f, -20.0f, 0.0f) * (float)delta * 0.0001f;
+					p.pos += p.speed * (float)delta;
+				}
+				else {
+					p.speed += glm::vec3(0.0f, -9.81f, 0.0f) * (float)delta * 0.2f;
+					p.pos += p.speed * (float)delta;
+				}
 				//p.cameradistance = glm::length2(p.pos - CameraPosition);
 				//ParticlesContainer[i].pos += glm::vec3(0.0f,10.0f, 0.0f) * (float)delta;
 
@@ -577,7 +592,7 @@ void Window::display_callback(GLFWwindow* window)
 
 	// ------------------- end particle stuff ---------------------------
 
-	//city->draw(cityShader);
+	city->draw(cityShader);
 	helicopterPos = glm::vec3(helicopter->getPosition());
 	newCamPos = glm::vec3(helicopter->getPosition());
 
@@ -586,16 +601,17 @@ void Window::display_callback(GLFWwindow* window)
 	//printf("helicopterPos.z: %f\n", helicopterPos.z);
 
 	newCamPos.x -= 3.0f;
-	newCamPos.y += 1.0f;
-	newCamPos.z -= 15.0f;
-
-	//V = glm::lookAt(newCamPos, helicopterPos, cam_up);
+	newCamPos.y += 0.0f;
+	newCamPos.z -= 10.0f;
 
 	glUseProgram(shaderProgram);
 	godzilla->draw(shaderProgram, 1);
-	// Switch back to regular shader
+
+	V = glm::lookAt(newCamPos, helicopterPos, cam_up);
+
+	// Switch back to environment mapping shader for helicopter
 	glUseProgram(helicopterShader);
-	//helicopter->draw();
+	helicopter->draw();
 
 	// Gets events, including input such as keyboard and mouse or window resizing
 	glfwPollEvents();
