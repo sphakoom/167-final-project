@@ -34,7 +34,7 @@ glm::mat4 ViewProjectionMatrix;
 GLint Window::shaderProgram, Window::skyboxShader, Window::cityShader, Window::helicopterShader, Window::particleShader;
 
 // Default camera parameters
-glm::vec3 Window::cam_pos(0.0f, 0.0f, 20.0f);		// e  | Position of camera
+glm::vec3 Window::cam_pos(10.0f, 30.0f, 50.0f);		// e  | Position of camera
 glm::vec3 Window::cam_look_at(0.0f, 0.0f, 0.0f);	// d  | helicopter is where the camera looks at
 glm::vec3 Window::cam_up(0.0f, 1.0f, 0.0f);			// up | What orientation "up" is
 
@@ -512,9 +512,9 @@ void Window::display_callback(GLFWwindow* window)
 	helicopterPos = glm::vec3(helicopter->getPosition());
 	newCamPos = glm::vec3(helicopter->getPosition());
 
-	printf("helicopterPos.x: %f\n", helicopterPos.x);
+	/*printf("helicopterPos.x: %f\n", helicopterPos.x);
 	printf("helicopterPos.y: %f\n", helicopterPos.y);
-	printf("helicopterPos.z: %f\n", helicopterPos.z);
+	printf("helicopterPos.z: %f\n", helicopterPos.z);*/
 
 	newCamPos.x -= 3.0f;
 	newCamPos.y += 1.0f;
