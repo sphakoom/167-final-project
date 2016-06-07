@@ -135,10 +135,17 @@ void OBJObject::parse(const char *filepath)
 			int start1 = stoi(v1.substr(0, v1.find_first_of('/')));
 			int start2 = stoi(v2.substr(0, v2.find_first_of('/')));
 			int start3 = stoi(v3.substr(0, v3.find_first_of('/')));
+			if ("ka-50.obj" == filepath) {
+				indices.push_back(start1);
+				indices.push_back(start2);
+				indices.push_back(start3);
 
-			indices.push_back(start1);
-			indices.push_back(start2);
-			indices.push_back(start3);
+			}
+			else {
+				indices.push_back(start1 - 1);
+				indices.push_back(start2 - 1);
+				indices.push_back(start3 - 1);
+			}
 			
 		}
 		// Process vertices
@@ -171,7 +178,8 @@ void OBJObject::parse(const char *filepath)
 			vertices.push_back(vertex);
 		}
 	}
-
+	fprintf(stderr, "# of verticies: %d\n", vertices.size());
+	fprintf(stderr, "# of faces: %d\n",indices.size());
 	float avgX, avgY, avgZ, dimX, dimY, dimZ;
 
 	avgX = (maxX + minX)/2;

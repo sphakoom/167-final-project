@@ -1,27 +1,28 @@
 #pragma once
 #ifndef _Plant_H_
 #define _Plant_H_
-
-#include <GL/glew.h>
-#include <GLFW/glfw3.h>
-#include <glm/mat4x4.hpp> // glm::mat4
-#include <glm/gtc/matrix_transform.hpp> // glm::translate, glm::rotate, glm::scale, glm::perspective
+#include "TurtleSystem.h"
 #include <string>
 #include "LSystem.h"
-#include "Turtle.h"
-//#include "LinkedList.h"
-#include "OBJObject.h"
+
 
 class Plant
 {
 public:
-	Plant();
+	Plant(string start, int generations, float moveLength, float turnAngle, float thickness);
 	//~Plant();
+	LSystem *ls;
+	TurtleSystem *ts;
+	float turnAngle;
+	float moveLength;
+	float thickness;
 
-	glm::mat4 toWorld;
-	GLuint VBO, VAO;
+	int generations = 0;
+	string start;
 
-	vector<glm::vec3> parse(string ops);
+	
+	void generate();
+	void parse(string ops);
 	void draw(GLuint shader);
 	void update();
 };

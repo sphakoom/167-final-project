@@ -40,6 +40,7 @@
     <ClInclude Include="..\Turtle.h" />
     <ClInclude Include="..\Turtle1.h" />
     <ClInclude Include="..\Texture.h" />
+    <ClInclude Include="..\TurtleSystem.h" />
     <ClInclude Include="..\Window.h" />
   </ItemGroup>
   <ItemGroup>
@@ -63,6 +64,7 @@
     <ClCompile Include="..\Turtle.cpp" />
     <ClCompile Include="..\Turtle1.cpp" />
     <ClCompile Include="..\Texture.cpp" />
+    <ClCompile Include="..\TurtleSystem.cpp" />
     <ClCompile Include="..\Window.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -133,7 +135,6 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <IncludePath>D:\Files\install;$(IncludePath)</IncludePath>
     <LibraryPath>C:\Program Files %28x86%29\Windows Kits\10\Lib\10.0.10586.0\um\x64;$(LibraryPath)</LibraryPath>
-
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>

@@ -46,6 +46,7 @@ in vec3 FragPos;
 
 out vec4 color;
 
+uniform vec3 plantPos;
 uniform vec3 viewPos;
 uniform DirLight dirLight;
 uniform PointLight pointLights[NR_POINT_LIGHTS];
@@ -71,8 +72,19 @@ void main()
     // == ======================================
     // Phase 1: Directional lighting
     vec3 result;
-	
-	if( lightMode == 1 )
+	if( lightMode == -1){
+	//result = vec3(FragPos.x / 255.0f,FragPos.y / 255.0f, FragPos.z / 255.0f);
+		//float length = plantPos.x * plantPos.x + plantPos.y * plantPos.y + plantPos.z * plantPos.z;
+		//result =  vec3(((118.0f / 255.0f) * length), 169.0f / 255.0f, 18.0f / 255.0f);;
+		if(FragPos.x > .1f || FragPos.x < -.1f || FragPos.z > .1f || FragPos.z < -.1f || FragPos.y > 5.0f){
+			result = vec3(118.0f / 255.0f, 169.0f / 255.0f, 18.0f / 255.0f);
+		} else{
+			result = vec3(122.0f / 255.0f, 72.0f / 255.0f, 15.0f / 255.0f);
+		}
+		//float length = fragPos.x * fragPos.x + fragPos.y * fragPos.y + fragPos.z * fragPos.z;
+		
+	}
+	 else if( lightMode == 1 )
 		result = CalcDirLight(dirLight, norm, viewDir);
 
 	else if( lightMode == 2)

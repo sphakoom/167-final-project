@@ -6,9 +6,12 @@ Skybox * skybox;
 //Cube * cube;
 City * city;
 Plant *p;
-GLint Window::shaderProgram, Window::skyboxShader, Window::cityShader;
-OBJObject* helicopter;
+Plant *p2;
+Plant *p3;
+Plant *p4;
+OBJObject *cyl;
 GLint Window::shaderProgram, Window::skyboxShader, Window::cityShader, Window::helicopterShader;
+OBJObject* helicopter;
 
 // Default camera parameters
 glm::vec3 Window::cam_pos(0.0f, 0.0f, 20.0f);		// e  | Position of camera
@@ -52,8 +55,33 @@ void Window::initialize_objects()
 	skybox = new Skybox();
 	//cube = new Cube();
 	city = new City();
-	p = new Plant();
+	initPlants();
 	helicopter = new OBJObject("ka-50.obj", "jade");
+	cyl = new OBJObject("Cylinder.obj", "jade");
+}
+
+void Window::initPlants() {
+	p = new Plant("A", 7, 1.0f / 25.0f, 22.5f, .1f);
+	p->ls->addrule("A", "[&FL!A]/////'[&FL!A]///////'[&FL!A]");
+	p->ls->addrule("F", "S/////F");
+	p->ls->addrule("S", "FL");
+	p->ls->addrule("L", "['''^^{-f+f+f-|-f+f+f}]");
+	p->generate();
+	
+	p2 = new Plant("X", 7, 1.0f / 25.0f, -25.7f, .1f);
+	p2->ls->addrule("X", "F[+X][-X]FX");
+	p2->ls->addrule("F", "FF");
+	p2->generate();
+
+	p3 = new Plant("X", 7, 1.0f / 25.0f, -25.7f, .1f);
+	p3->ls->addrule("X", "F[+X][-X]FX");
+	p3->ls->addrule("F", "FF");
+	p3->generate();
+
+	p4 = new Plant("X", 7, 1.0f / 25.0f, -25.7f, .1f);
+	p4->ls->addrule("X", "F[+X][-X]FX");
+	p4->ls->addrule("F", "FF");
+	p4->generate();
 }
 
 void Window::clean_up()
@@ -195,11 +223,14 @@ void Window::display_callback(GLFWwindow* window)
 	glUseProgram(shaderProgram);
 	//bunny->draw(shaderProgram, 0);
 	p->draw(shaderProgram);
-
+	p2->draw(shaderProgram);
+	p3->draw(shaderProgram);
+	p4->draw(shaderProgram);
+	//cyl->draw(shaderProgram, 0);
 	V = glm::lookAt(cam_pos, cam_look_at, cam_up);
-
+	
 	glUseProgram(helicopterShader);
-	helicopter->draw();
+	//helicopter->draw();
 
 	// Gets events, including input such as keyboard and mouse or window resizing
 	glfwPollEvents();
@@ -231,6 +262,14 @@ void Window::key_callback(GLFWwindow* window, int key, int scancode, int action,
 		case GLFW_KEY_D:
 			cam_pos.x += 1.0f;
 			cam_look_at.x += 1.0f;
+			break;
+		case GLFW_KEY_Q:
+			cam_pos.y += 1.0f;
+			cam_look_at.y += 1.0f;
+			break;
+		case GLFW_KEY_E:
+			cam_pos.y -= 1.0f;
+			cam_look_at.y -= 1.0f;
 			break;
 		default:
 			printf("Invalid key press\n");
