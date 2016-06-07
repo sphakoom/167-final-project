@@ -90,6 +90,10 @@ float OBJObject::getPointSize()
 	return this->pointSize;
 }
 
+glm::vec4 OBJObject::getPosition() {
+	return this->toWorld[3];
+}
+
 /*
  * Parses an OBJ file.
  */
@@ -215,10 +219,6 @@ void OBJObject::parse(const char *filepath)
 	}
 
 	inFile.close();
-
-	for (unsigned int i = 0; i < vertices.size(); ++i) {
-		vertices[i] *= 10.0f;
-	}
 }
 
 void OBJObject::loadData()

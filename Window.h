@@ -11,6 +11,7 @@
 #include "Skybox.h"
 #include "shader.h"
 #include "City.h"
+#include "Particle.h"
 
 class Window
 {
@@ -26,6 +27,7 @@ public:
 	static GLint skyboxShader;
 	static GLint cityShader;
 	static GLint helicopterShader;
+	static GLint particleShader;
 	static void initialize_objects();
 	static void clean_up();
 	static GLFWwindow* create_window(int width, int height);
