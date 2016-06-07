@@ -219,10 +219,6 @@ void OBJObject::parse(const char *filepath)
 	}
 
 	inFile.close();
-
-	for (unsigned int i = 0; i < vertices.size(); ++i) {
-		vertices[i] *= 5.0f;
-	}
 }
 
 void OBJObject::loadData()

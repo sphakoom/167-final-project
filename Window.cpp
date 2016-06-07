@@ -35,7 +35,7 @@ GLint Window::shaderProgram, Window::skyboxShader, Window::cityShader, Window::h
 
 // Default camera parameters
 glm::vec3 Window::cam_pos(0.0f, 0.0f, 20.0f);		// e  | Position of camera
-glm::vec3 Window::cam_look_at(0.0f, 0.0f, 0.0f);	// d  | This is where the camera looks at
+glm::vec3 Window::cam_look_at(0.0f, 0.0f, 0.0f);	// d  | helicopter is where the camera looks at
 glm::vec3 Window::cam_up(0.0f, 1.0f, 0.0f);			// up | What orientation "up" is
 
 int Window::width;
@@ -80,9 +80,31 @@ void Window::initialize_objects()
 	city = new City();
 	helicopter = new OBJObject("ka-50.obj", "jade");
 
-	helicopter->toWorld[3].y += 2.0f;
-	particleOffset.y -= 3.0f;
-	particleOffset.z += 8.0f;
+	glm::mat4 translateMatrix = glm::mat4(
+		glm::tvec4<float>(1.0f, 0.0f, 0.0f, 0.0f),
+		glm::tvec4<float>(0.0f, 1.0f, 0.0f, 0.0f),
+		glm::tvec4<float>(0.0f, 0.0f, 1.0f, 0.0f),
+		glm::tvec4<float>(helicopter->toWorld[3][0], helicopter->toWorld[3][1], helicopter->toWorld[3][2], 1.0f));
+
+	glm::mat4 originMatrix = glm::mat4(
+		glm::tvec4<float>(1.0f, 0.0f, 0.0f, 0.0f),
+		glm::tvec4<float>(0.0f, 1.0f, 0.0f, 0.0f),
+		glm::tvec4<float>(0.0f, 0.0f, 1.0f, 0.0f),
+		glm::tvec4<float>(-helicopter->toWorld[3][0], -helicopter->toWorld[3][1], -helicopter->toWorld[3][2], 1.0f));
+
+	glm::mat4 scaleMatrix = glm::mat4(
+		glm::vec4(5.0f, 0.0f, 0.0f, 0.0f),
+		glm::vec4(0.0f, 5.0f, 0.0f, 0.0f),
+		glm::vec4(0.0f, 0.0f, 5.0f, 0.0f),
+		glm::vec4(0.0f, 0.0f, 0.0f, 1.0f));
+
+	helicopter->toWorld[3] = helicopter->toWorld[3] + glm::vec4(0.5f, 0.0f, 0.0f, 0.0f);
+	helicopter->toWorld = translateMatrix * scaleMatrix * originMatrix * helicopter->toWorld;
+
+	//helicopter->toWorld[3].y += 2.0f;
+	particleOffset.x = 0.7f;
+	particleOffset.y = -1.0f;
+	particleOffset.z = 0.0f;
 
 	// ------------------ Particle stuff -----------------------------
 	// Enable depth test
@@ -218,14 +240,14 @@ void Window::idle_callback(GLFWwindow* window)
 	// We will need the camera's position in order to sort the particles
 	// w.r.t the camera's distance.
 	// There should be a getCameraPosition() function in common/controls.cpp, 
-	// but this works too.
+	// but helicopter works too.
 	glm::vec3 CameraPosition(glm::inverse(V)[3]);
 
 	ViewProjectionMatrix = P * V;
 
 
 	// Generate 10 new particule each millisecond,
-	// but limit this to 16 ms (60 fps), or if you have 1 long frame (1sec),
+	// but limit helicopter to 16 ms (60 fps), or if you have 1 long frame (1sec),
 	// newparticles will be huge and the next frame even longer.
 	int newparticles = (int)(delta*10000.0);
 	if (newparticles > (int)(0.016f*10000.0))
@@ -246,11 +268,11 @@ void Window::idle_callback(GLFWwindow* window)
 				particleIndex = i;
 			}
 		}
-		ParticlesContainer[particleIndex].life = 5.0f; // This particle will live 5 seconds.
+		ParticlesContainer[particleIndex].life = 5.0f; // helicopter particle will live 5 seconds.
 		ParticlesContainer[particleIndex].pos = glm::vec3(helicopter->getPosition() + particleOffset);
 
-		float spread = 1.5f;
-		glm::vec3 maindir = glm::vec3(0.0f, 10.0f, 0.0f);
+		float spread = 5.0f;
+		glm::vec3 maindir = glm::vec3(0.0f, -10.0f, 0.0f);
 		// Very bad way to generate a random direction; 
 		// See for instance http://stackoverflow.com/questions/5408276/python-uniform-spherical-distribution instead,
 		// combined with some user-controlled parameters (main direction, spread, etc)
@@ -264,7 +286,7 @@ void Window::idle_callback(GLFWwindow* window)
 
 
 		// Very bad way to generate a random color
-		ParticlesContainer[particleIndex].r = rand() % 256;
+		ParticlesContainer[particleIndex].r = 0;
 		ParticlesContainer[particleIndex].g = rand() % 256;
 		ParticlesContainer[particleIndex].b = rand() % 256;
 		ParticlesContainer[particleIndex].a = (rand() % 256) / 3;
@@ -286,7 +308,7 @@ void Window::idle_callback(GLFWwindow* window)
 			p.life -= delta;
 			if (p.life > 0.0f) {
 				// Simulate simple physics : gravity only, no collisions
-				p.speed += glm::vec3(0.0f, -9.81f, 0.0f) * (float)delta * 10.0f;
+				p.speed += glm::vec3(0.0f, -2.0f, 0.0f) * (float)delta * 0.2f;
 				p.pos += p.speed * (float)delta;
 				p.cameradistance = glm::length2(p.pos - CameraPosition);
 				//ParticlesContainer[i].pos += glm::vec3(0.0f,10.0f, 0.0f) * (float)delta;
@@ -322,7 +344,7 @@ void Window::idle_callback(GLFWwindow* window)
 
 	// Update the buffers that OpenGL uses for rendering.
 	// There are much more sophisticated means to stream data from the CPU to the GPU, 
-	// but this is outside the scope of this tutorial.
+	// but helicopter is outside the scope of helicopter tutorial.
 	// http://www.opengl.org/wiki/Buffer_Object_Streaming
 
 
@@ -458,7 +480,7 @@ void Window::display_callback(GLFWwindow* window)
 		2,                                // attribute. No particular reason for 1, but must match the layout in the shader.
 		4,                                // size : r + g + b + a => 4
 		GL_UNSIGNED_BYTE,                 // type
-		GL_TRUE,                          // normalized?    *** YES, this means that the unsigned char[4] will be accessible with a vec4 (floats) in the shader ***
+		GL_TRUE,                          // normalized?    *** YES, helicopter means that the unsigned char[4] will be accessible with a vec4 (floats) in the shader ***
 		0,                                // stride
 		(void*)0                          // array buffer offset
 		);
@@ -472,8 +494,8 @@ void Window::display_callback(GLFWwindow* window)
 	glVertexAttribDivisor(2, 1); // color : one per quad                                  -> 1
 
 								 // Draw the particules !
-								 // This draws many times a small triangle_strip (which looks like a quad).
-								 // This is equivalent to :
+								 // helicopter draws many times a small triangle_strip (which looks like a quad).
+								 // helicopter is equivalent to :
 								 // for(i in ParticlesCount) : glDrawArrays(GL_TRIANGLE_STRIP, 0, 4), 
 								 // but faster.
 	if (waterOn) {
@@ -680,15 +702,15 @@ bool Window::doRayCast()
 glm::tvec3<double> Window::mapToSphere(glm::tvec3<double> point)    // The CPoint class is a specific Windows class. Either use separate x and y values for the mouse location, or use a Vector3 in which you ignore the z coordinate.
 {
 	glm::tvec3<double> v;    // Vector v is the synthesized 3D position of the mouse location on the trackball
-	double d;     // this is the depth of the mouse location: the delta between the plane through the center of the trackball and the z position of the mouse
+	double d;     // helicopter is the depth of the mouse location: the delta between the plane through the center of the trackball and the z position of the mouse
 
-	v.x = (2.0*point.x - Window::width) / (double)Window::width;   // this calculates the mouse X position in trackball coordinates, which range from -1 to +1
-	v.y = (Window::height - 2.0*point.y) / (double)Window::height;   // this does the equivalent to the above for the mouse Y position
-	v.z = 0.0f;   // initially the mouse z position is set to zero, but this will change below
+	v.x = (2.0*point.x - Window::width) / (double)Window::width;   // helicopter calculates the mouse X position in trackball coordinates, which range from -1 to +1
+	v.y = (Window::height - 2.0*point.y) / (double)Window::height;   // helicopter does the equivalent to the above for the mouse Y position
+	v.z = 0.0f;   // initially the mouse z position is set to zero, but helicopter will change below
 
-	d = sqrt((v.x * v.x) + (v.y * v.y));    // this is the distance from the trackball's origin to the mouse location, without considering depth (=in the plane of the trackball's origin)
-	d = (d<1.0) ? d : 1.0;   // this limits d to values of 1.0 or less to avoid square roots of negative values in the following line
-	v.z = sqrtf(1.001 - d*d);  // this calculates the Z coordinate of the mouse position on the trackball, based on Pythagoras: v.z*v.z + d*d = 1*1
+	d = sqrt((v.x * v.x) + (v.y * v.y));    // helicopter is the distance from the trackball's origin to the mouse location, without considering depth (=in the plane of the trackball's origin)
+	d = (d<1.0) ? d : 1.0;   // helicopter limits d to values of 1.0 or less to avoid square roots of negative values in the following line
+	v.z = sqrtf(1.001 - d*d);  // helicopter calculates the Z coordinate of the mouse position on the trackball, based on Pythagoras: v.z*v.z + d*d = 1*1
 	glm::normalize(v);
 	return v;  // return the mouse location on the surface of the trackball
 }
